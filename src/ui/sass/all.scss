@@ -1,0 +1,240 @@
+@import 'parts/config';
+
+:root {
+  --theme: 'light';
+  --accent: #{$accent};
+  margin: 0;
+}
+
+* {box-sizing: border-box}
+
+html, 
+body {
+	width: 100%;
+	height: 100%;
+	font-family: $fontfam;
+	@include theme('light');
+	font-size: font(22px, 16px, 1920px, 786px);
+  @include respond-to('mobile') {
+    font-size: font(22px, 16px, 786px, 320px);
+  }
+}
+
+a {
+	text-decoration: none;
+	color: darken($accent, 10%);
+	font-weight: 700;
+  &:hover,
+  &:focus {
+    border-bottom: $border-width+0px dashed #ccc;
+  }
+  &:visited {
+    font-style: italic;
+    border-bottom: $border-width+0px dashed $accent;
+  }
+}
+
+code {
+  border-radius: 2px;
+  padding: 3px 5px;
+  font-size: 1em;
+  font-weight: 800;
+  color: inherit;
+  background-color: rgba(setcolor($selectedTheme, fg), .05);
+}
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 3.5em;
+  font-weight: 700;
+  padding: $gap+0px;
+  width: 100%;
+  text-align: center;
+}
+.button,
+.btn {
+  $iconsize: 2;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include buttonDefault();
+  text-align: center;
+  flex-shrink: inherit;
+  z-index: 1;
+  &:focus,
+  &:hover {
+    outline: none;
+  }
+  &-primary,
+  &--primary {
+    color: #fff;
+    background-color: $accent;
+    &:focus,
+    &:hover {
+      background-color: darken($accent, 15%);
+    }
+  }
+  &-secondary,
+  &--secondary {
+    border: 1px solid #eee;
+    &:focus,
+    &:hover {
+      background-color: setcolor($selectedTheme, bg);
+      border-color: darken($accent, 15%);
+      color: darken($accent, 15%);
+    }
+  }
+  &-default,
+  &--default {
+    color: inherit;
+    background-color: rgba(setcolor($selectedTheme, fg), .055);
+		user-select: none;
+    border: 1px solid #eee;
+    &:focus,
+    &:hover {
+      background-color: setcolor($selectedTheme, bg);
+    }
+    &:not(.active) {
+      outline-offset: ($gap/2 - ($border-width/2))+0px;
+      &:focus,
+      &:hover {
+        outline: $border-width+0px dashed #ccc;
+      }
+    }
+  }
+  &-disabled,
+  &--disabled {
+    pointer-events: none;
+    color: rgba(#111, .35);
+    background-color: #EEEEEE;
+  }
+  &-square,
+  &--square {
+    padding: 0;
+    text-align: center;
+    min-width: $searchbar+0px;
+    min-height: $searchbar+0px;
+  }
+  svg,
+  img {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    height: 1em;
+  }
+  .icon {
+    display: block;
+    width: $iconsize+0em;
+    height: $iconsize+0em;
+    background-size: $iconsize+0em;
+    flex-shrink: 0;
+  }
+}
+
+.show-on-mobile {
+  // display: none;
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  visibility: hidden;
+  opacity: 0;
+  @include respond-to('mobile') {
+    position: relative;
+    top: 0;
+    right: 0;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+  }
+}
+.hide-on-mobile {
+  @include respond-to('mobile') {
+    // display: none;
+    visibility: hidden;
+    opacity: 0;
+  }
+  display: block;
+  visibility: visible;
+  opacity: 1;
+}
+
+.fade-enter-active, 
+.fade-leave-active {
+  transition: $far $curve all;
+}
+.fade-enter, 
+.fade-leave-to {
+  opacity: 0;
+}
+
+.popup-enter-active, 
+.popup-leave-active {
+  transition: $near $snap all;
+}
+.popup-enter, 
+.popup-leave-to{
+  opacity: 0;
+	transform: translatey(100%);
+}
+
+
+.lights-out {
+  @include theme('dark');
+  .btn {
+    &-secondary {
+      background-color: setcolor('dark', bg);
+    }
+    &-default {
+      background-color: rgba(setcolor('dark', fg), .055);
+      &:focus,
+      &:hover {
+        background-color: setcolor('dark', bg);
+      }
+    }
+  }
+  .icon-search {
+    &:before {
+      filter: invert(1);
+    }
+    &:after {
+      background-color: rgba(setcolor('dark', bg), .9);
+    }
+  }
+  button {
+    &.active {
+      color: setcolor('dark', fg);
+      background-color: darken(setcolor('dark', bg), 10%);
+    }
+  }
+  input {
+    color: inherit;
+    background-color: rgba(setcolor('dark', fg), .055);
+    &:focus {
+      color: inherit;
+      background-color: setcolor('dark', bg);
+    }
+  }
+  code {
+    background-color: rgba(setcolor('dark', fg), .3);
+  }
+  .notification-toast {
+    .bubble {
+      @include theme('dark');
+      background-color: rgba(setcolor('dark', bg), .9);
+      &-details {
+        img {
+          filter: invert(1);
+        }
+      }
+    }
+  }
+  @include respond-to('mobile') {
+    .hide-on-mobile {
+      color: setcolor('dark', fg) !important;
+      background-color: setcolor('dark', bg) !important;
+    }
+  }
+}

@@ -1,0 +1,48 @@
+$fontfam: (
+	'Inter',
+	sans-serif
+);
+$accent: #1155ee !default;
+// This is the theme selector. Available themes can be found 
+// in the $theme list. Adding themes is easy! just follow the
+// syntax for light or dark, and declare them below!
+$selectedTheme: 'light';
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+$a: $accent;
+$black: #111;
+$white: #fff;
+$near: 225ms;
+$far: 375ms;
+$bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$curve: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$snap: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+$searchbar: 30;
+$gap: 10;
+$border-width: 2;
+
+$theme: (
+	'light': (
+		bg: $white,
+		fg: $black
+	),
+	'dark': (
+		bg: $black,
+		fg: $white
+	),
+);
+
+$small: 320 !default;
+$medium: 550 !default;
+$large: 768 !default;
+$xLarge: 1366 !default;
+$xxLarge: 1920 !default;
+$breakpoints: (
+  'small': $small+0px,
+  'medium': $medium+0px,
+  'mobile': $large+0px,
+  'desktop': $xLarge+0px,
+  'retina': $xxLarge+0px
+);

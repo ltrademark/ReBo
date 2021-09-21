@@ -1,0 +1,21 @@
+@function setcolor($pallet, $type) {
+ @return map-get(map-get($theme, $pallet), $type);
+}
+@function font($to, $from, $toWidth, $fromWidth) {
+$slope: ($to - $from) / ($toWidth - $fromWidth);
+$base: $from - $slope * $fromWidth;
+
+@return calc(#{$base} + #{100vw * $slope});
+}
+@function contrast($c, $darker, $lighter, $threshold: 50) {
+@if $threshold>100 {
+ // @error "cant be over 100";
+ $threshold: 100;
+}
+@if (lightness($c)>$threshold) {
+ @return $darker;
+}
+@else {
+ @return $lighter;
+}
+}

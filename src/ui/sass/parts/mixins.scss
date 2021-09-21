@@ -1,0 +1,60 @@
+@mixin respond-to($breakpoint, $dir: 'desktop-first') {
+	@if map-has-key($breakpoints, $breakpoint) {
+		$value: map-get($breakpoints, $breakpoint);  
+    $width: '';
+		
+    @if $dir=='mobile-first' {
+      $width: unquote('min-width');
+    }
+
+    @else {
+      $width: unquote('max-width');
+    }
+
+    @media screen and (#{$width}: $value) {
+      @content;
+    }
+	}
+  // @warn 'Unknown `#{$breakpoint}` in $breakpoints';
+}
+@mixin theme($pallet) {
+	color: setcolor($pallet, fg);
+	background-color: setcolor($pallet, bg);	
+}
+@mixin custom-scrollbar($c: $accent, $d: 'h', $s: 0.5rem) {
+  @if $s > 1rem {
+    scrollbar-width: auto;
+  }
+  @if $s < 1rem {
+    scrollbar-width: thin;
+  }
+  @if $s == 0 {
+    scrollbar-width: none;
+  }
+  scrollbar-color: $c rgba($c, 0);
+  &::-webkit-scrollbar {
+    @if $d == 'h' {
+      width: $s;
+    }
+    @if $d == 'v' {
+      height: $s;
+    }
+    &-thumb {
+      background-color: $c;
+    }
+    &-track {
+      background-color: rgba($c, 0);
+    }
+  }
+}
+@mixin buttonDefault() {
+  // -webkit-tap-highlight-color: rgba(#000, 0);
+  // cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  outline: none;
+  border: none;
+}
