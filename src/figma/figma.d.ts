@@ -3,11 +3,11 @@ declare const figma: PluginAPI
 declare const __html__: string
 
 interface PluginAPI {
-  notify(arg0: string)
   readonly apiVersion: "1.0.0"
   readonly command: string
   readonly root: DocumentNode
   readonly viewport: ViewportAPI
+  notify(arg0: string): void
   closePlugin(message?: string): void
 
   showUI(html: string, options?: ShowUIOptions): void
@@ -62,9 +62,12 @@ interface ClientStorageAPI {
 }
 
 type ShowUIOptions = {
-  visible?: boolean,
-  width?: number,
-  height?: number,
+  visible?: boolean
+  title?: string
+  width?: number
+  height?: number
+  position?: { x: number; y: number }
+  themeColors?: boolean
 }
 
 type UIPostMessageOptions = {
@@ -86,9 +89,10 @@ interface UIAPI {
 }
 
 interface ViewportAPI {
-  center: { x: number, y: number }
+  center: Vector
   zoom: number
-  scrollAndZoomIntoView(nodes: ReadonlyArray<BaseNode>)
+  scrollAndZoomIntoView(nodes: ReadonlyArray<BaseNode>): void
+  readonly bounds: Rect
 }
 
 ////////////////////////////////////////////////////////////////////////////////

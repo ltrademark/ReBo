@@ -2,9 +2,12 @@ const path = require("path");
 const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+// const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const { VueLoaderPlugin } = require('vue-loader');
 
-module.exports = {
+module.exports = (env, argv) => ({
+  mode: argv.mode === 'production' ? 'production' : 'development',
+  devtool: argv.mode === 'production' ? false : 'inline-source-map',
   entry: {
     ui: "./src/ui/ui.js",
     code: "./src/figma/code.ts"
@@ -18,7 +21,18 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ["vue-style-loader", "css-loader"]
+        use: [
+          {
+            loader: 'vue-style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[local]_[hash:base64:8]'
+            }
+          }
+        ]
       },
       {
         test: /\.ts?$/,
@@ -39,7 +53,10 @@ module.exports = {
       },
       {
         test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: file => (
+          /node_modules/.test(file) &&
+          !/\.vue\.js/.test(file)
+        ),
         use: {
           loader: "babel-loader",
           options: {
@@ -48,7 +65,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(png|jpg|gif|pdf|md|svg)$/,
+        test: /\.(png|jpg|gif|svg)$/,
         loader: "file-loader",
         options: {
           name: "[name].[ext]?[hash]"
@@ -72,28 +89,19 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./public/index.html",
       filename: "ui.html",
-      inlineSource: ".(js)$",
-      chunks: ["ui"]
+      template: path.resolve(__dirname, 'public', 'index.html'),
+      inlineSource: ".(js|css)$",
+      chunks: ["ui"],
+      collapseWhitespace: true,
+      keepClosingSlash: true,
+      removeComments: true,
+      removeRedundantAttributes: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+      useShortDoctype: true
     }),
-    new HtmlWebpackInlineSourcePlugin(),
+    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
     new VueLoaderPlugin()
-  ],
-  devtool: "inline-source-map"
-};
-
-if (process.env.NODE_ENV === "production") {
-  module.exports.devtool = false;
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ]);
-}
+  ]
+});

@@ -1,5 +1,5 @@
 <template>
-  <GuideG />
+  <guide-plugin></guide-plugin>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import "../figma/figma-ds/js/selectMenu";
 import "../figma/figma-ds/js/iconInput";
 import "../figma/figma-ds/js/disclosure";
 
-import GuideG from "./components/Shishin";
+import guidePlugin from "./components/Shishin";
 
 export default {
   data() {
@@ -15,7 +15,7 @@ export default {
   },
 
   components: {
-    GuideG
+    guidePlugin
   },
 
   mounted() {
