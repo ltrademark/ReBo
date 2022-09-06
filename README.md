@@ -2,7 +2,7 @@
 
 Easily create an manage guides you create
 
-## Features
+## 💫 Features
 
 ✨ Easily add mirrored margin bounds to your frames
 ✨ Create Columns for a quick column (or row) grid
@@ -11,8 +11,15 @@ Easily create an manage guides you create
 ✨ Multi-frame guides clear
 ✨ KeyCombo! `Control` + `Shift` + `S` to save your current guides
 
-## To Do
+## 📦 Development
+- Clone Repo
+- First run `yarn` to install packages & dependencies
+- Then, with hopefully no errors, run `yarn dev` to start running the plugin.
+- Run the plugin in Figma to test (be sure to have that console open, just in case).
 
+---
+
+## ✅ To Do
 - ~~finish quick-add actions~~
 - ~~finalize UI~~
 - ~~import icons~~
@@ -25,7 +32,7 @@ Easily create an manage guides you create
 - ~~add localStorage for users saved guides~~
 - ~~Optimize Saved data and applying saved guides.~~
 
-## Active Bugs
+## 🪲 Active Bugs
 
 - ~~when adding a saved guide to a new frame, some guides are out of bounds.~~
 - selecting multiple frames and applying margins only respects one frame
