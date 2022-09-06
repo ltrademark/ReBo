@@ -83,7 +83,7 @@
         <div @click="addIndividualGuide('edgeBottom')" class="gg-icons gg-icons--bottom-edge" title="Add Guide to Bottom Edge"></div>
       </div>
       <div class="gg-app--controls_bottom">
-        <button class="button" @click="inputActivity ? addGuides() : ''" :class="inputActivity ? 'button--primary' : 'button--disabled'">Add Guides</button>
+        <button class="button" @click="inputActivity ? addGuides() : ''" :class="inputActivity ? 'button--primary' : 'button--secondary button--disabled'">Add Guides</button>
         <div class="additional-controls button button--secondary" @click="actionTrayOpen=!actionTrayOpen" v-if="inputActivity">
           <i class="gg-icons gg-icons--caret-up" :style="actionTrayOpen ? 'transform: rotate(180deg)' : ''"></i>
         </div>
@@ -469,6 +469,21 @@
 
 <style lang="scss">
   @import "../sass/parts/config.scss";
+      
+  * {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    font-family: $fontfam;
+    background-color: var(--figma-color-bg);
+    color: var(--figma-color-text);
+    font-size: font(22px, 16px, 786px, 320px);
+    margin: 0;
+  }
+
   body {
     margin: 0;
   }
@@ -489,6 +504,60 @@
     -moz-appearance: none;
     appearance: none;
   }
+
+  // .btn {
+  //   --btn-fg: var(--figma-color-text);
+  //   --btn-bg: var(--figma-color-bg);
+
+  //   position: relative;
+  //   @include buttonDefault();
+  //   color: var(--btn-fg);
+  //   background-color: var(--btn-bg);
+  //   z-index: 1;
+  //   &:focus,
+  //   &:hover {
+  //     --btn-bg: var(--figma-color-bg-secondary);
+  //     outline: none;
+  //   }
+  //   &--primary {
+  //     --btn-fg: #fff;
+  //     --btn-bg: var(--accent);
+  //     &:focus,
+  //     &:hover {
+  //       --btn-bg: var(--accent-hover);
+  //     }
+  //   }
+  //   &--secondary {
+  //     border: 1px solid currentColor !important;
+  //     &:focus,
+  //     &:hover {
+  //       --btn-bg: var(--figma-color-bg-secondary);
+  //       border-color: var(--figma-color-bg-tertiary);
+  //     }
+  //   }
+  //   &--default {
+  //     color: inherit;
+  //     user-select: none;
+  //     border: 1px solid var(--figma-color-border);
+  //     &:focus,
+  //     &:hover {
+  //       --btn-bg: var(--accent-hover);
+  //     }
+  //   }
+  //   &-square {
+  //     padding: 0;
+  //     text-align: center;
+  //     min-width: $searchbar + 0px;
+  //     min-height: $searchbar + 0px;
+  //   }
+  //   svg,
+  //   img {
+  //     display: inline-block;
+  //     vertical-align: middle;
+  //     width: auto;
+  //     height: 1em;
+  //   }
+  // }
   
   .gg-app {
     position: relative;
@@ -499,7 +568,7 @@
     &--tabs {
       position: relative;
       width: 100%;
-      border-bottom: 1px solid #EEEEEE;
+      border-bottom: 1px solid var(--figma-color-border);
 
       ul {
         display: flex;
@@ -516,12 +585,12 @@
           font-size: 12px;
           font-weight: 600;
           padding: 10px 5px;
-          color: #787878;
+          color: var(--figma-color-text);
           &_active {
             color: var(--accent);
           }
           &:last-child {
-            border-left: 1px solid #EEEEEE;
+            border-left: 1px solid var(--figma-color-border);
           }
         }
       }
@@ -591,7 +660,7 @@
       }
       &_top {
         justify-content: space-between;
-        background-color: #EFEFEF;
+        background-color: var(--figma-color-bg-secondary  );
         div {
           cursor: pointer;
         }
@@ -616,12 +685,12 @@
       display: flex;
       flex-direction: column;
       margin: 0;
-      background-color: #EFEFEF;
+      background-color: var(--figma-color-bg-secondary);
       visibility: hidden;
       opacity: 0;
       transition: 225ms $curve all;
       box-shadow: 0 -.5rem .5rem rgba(#000,.1);
-      border-radius: 10px 10px 0 0;
+      border-radius: var(--br, 3px) var(--br, 3px) 0 0;
       &.open {
         transform: translateY(0);
         visibility: visible;
@@ -647,14 +716,15 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(#000, .7);
+        background-color: var(--figma-color-bg);
+        opacity: .7;
       }
       &_body {
         position: relative;
         width: 100%;
         padding: 10px;
-        background-color: #fff;
-        border-radius: 10px 10px 0 0;
+        background-color: var(--figma-color-bg);
+        border-radius: var(--br, 3px) var(--br, 3px) 0 0;
         input {
           padding: 5px 0;
         }
@@ -664,9 +734,9 @@
         display: flex;
         width: 100%;
         padding: 10px;
-        background-color: #fff;
-        border-top: 1px solid #eee;
-        border-radius: 0 0 10px 10px;
+        background-color: var(--figma-color-bg);
+        border-top: 1px solid var(--figma-color-border);
+        border-radius: 0 0 var(--br, 3px) var(--br, 3px);
         .button {
           width: 100%;
           + .button {
@@ -676,7 +746,6 @@
       }
     }
   }
-  
   
   .gg-row {
     display: flex;
@@ -691,13 +760,17 @@
     align-items: center;
     width: 100%;
     padding: 5px;
-    background: #EFEFEF;
-    border-radius: 3px;
+    color: var(--figma-color-text);
+    background: var(--figma-color-bg-secondary);
+    border-radius: var(--br, 3px);
     & + & {
       margin-left: 5px;
     }
     > * + * {
       margin-left: .2rem;
+    }
+    input {
+      color: currentColor;
     }
     &--link {
       background: none;
@@ -705,7 +778,7 @@
       flex-shrink: 2;
       padding: 0;
       &.linked {
-        background: #EFEFEF;
+        background: var(--figma-color-bg-secondary);
       }
     }
     &--slide {
@@ -715,11 +788,12 @@
         font-weight: normal;
         text-align: center;
         padding: 2px;
-        background-color: #DEDEDE;
-        border-radius: 3px;
+        background-color: var(--figma-color-bg-tertiary);
+        border-radius: var(--br, 3px);
         margin-right: 4px;
       }
       .range-track {
+        --track-bg: var(--figma-color-bg-tertiary);
         position: relative;
         width: 100%;
         max-width: 150px;
@@ -733,8 +807,8 @@
           right: 0;
           transform: translateY(-50%);
           height: 2px;
-          border-radius: 2px;
-          background-color: #DEDEDE;
+          border-radius: var(--br, 3px);
+          background-color: var(--track-bg);
         }
         input {
           margin: 0;

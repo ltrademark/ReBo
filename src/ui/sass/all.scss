@@ -2,8 +2,13 @@
 
 :root {
   --theme: 'light';
-  --accent: #{$accent};
+  --accent: var(--figma-color-bg-brand);
+  --accent-hover: var(--figma-color-bg-brand-hover);
+  --accent-active: var(--figma-color-bg-brand-pressed);
+  --br: 3px;
+  accent-color: var(--accent);
   margin: 0;
+  font-size: 8px;
 }
 
 * {box-sizing: border-box}
@@ -13,11 +18,10 @@ body {
 	width: 100%;
 	height: 100%;
 	font-family: $fontfam;
-	@include theme('light');
-	font-size: font(22px, 16px, 1920px, 786px);
-  @include respond-to('mobile') {
-    font-size: font(22px, 16px, 786px, 320px);
-  }
+	// @include theme('light');
+  background-color: var(--figma-color-bg);
+  color: var(--figma-color-text);
+  font-size: font(22px, 16px, 786px, 320px);
 }
 
 a {
@@ -32,6 +36,12 @@ a {
     font-style: italic;
     border-bottom: $border-width+0px dashed $accent;
   }
+}
+
+svg.icon {
+  color: var(--figma-color-text);
+  width: auto;
+  height: 1em;
 }
 
 code {
@@ -56,60 +66,65 @@ code {
 .button,
 .btn {
   $iconsize: 2;
+  --btn-fg: var(--figma-color-text);
+  --btn-bg: var(--figma-color-bg);
+
+  @include buttonDefault();
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  @include buttonDefault();
   text-align: center;
   flex-shrink: inherit;
+  color: var(--btn-fg);
+  background-color: var(--btn-bg);
   z-index: 1;
+
   &:focus,
   &:hover {
+    --btn-bg: var(--figma-color-bg-secondary);
     outline: none;
   }
   &-primary,
   &--primary {
-    color: #fff;
-    background-color: $accent;
+    --btn-fg: #fff;
+    --btn-bg: var(--accent);
     &:focus,
     &:hover {
-      background-color: darken($accent, 15%);
+      --btn-bg: var(--accent-hover);
     }
   }
   &-secondary,
   &--secondary {
-    border: 1px solid #eee;
+    border: 1px solid currentColor !important;
     &:focus,
     &:hover {
-      background-color: setcolor($selectedTheme, bg);
-      border-color: darken($accent, 15%);
-      color: darken($accent, 15%);
+      --btn-bg: var(--figma-color-bg-secondary);
+      border-color: var(--figma-color-bg-tertiary);
     }
   }
   &-default,
   &--default {
     color: inherit;
-    background-color: rgba(setcolor($selectedTheme, fg), .055);
-		user-select: none;
-    border: 1px solid #eee;
+    user-select: none;
+    border: 1px solid var(--figma-color-border);
     &:focus,
     &:hover {
-      background-color: setcolor($selectedTheme, bg);
+      --btn-bg: var(--accent-hover);
     }
     &:not(.active) {
       outline-offset: ($gap/2 - ($border-width/2))+0px;
       &:focus,
       &:hover {
-        outline: $border-width+0px dashed #ccc;
+        outline: $border-width+0px dashed var(--figma-color-bg-tertiary);
       }
     }
   }
   &-disabled,
   &--disabled {
     pointer-events: none;
-    color: rgba(#111, .35);
-    background-color: #EEEEEE;
+    filter: grayscale(1);
+    opacity: .6;
   }
   &-square,
   &--square {
@@ -178,63 +193,4 @@ code {
 .popup-leave-to{
   opacity: 0;
 	transform: translatey(100%);
-}
-
-
-.lights-out {
-  @include theme('dark');
-  .btn {
-    &-secondary {
-      background-color: setcolor('dark', bg);
-    }
-    &-default {
-      background-color: rgba(setcolor('dark', fg), .055);
-      &:focus,
-      &:hover {
-        background-color: setcolor('dark', bg);
-      }
-    }
-  }
-  .icon-search {
-    &:before {
-      filter: invert(1);
-    }
-    &:after {
-      background-color: rgba(setcolor('dark', bg), .9);
-    }
-  }
-  button {
-    &.active {
-      color: setcolor('dark', fg);
-      background-color: darken(setcolor('dark', bg), 10%);
-    }
-  }
-  input {
-    color: inherit;
-    background-color: rgba(setcolor('dark', fg), .055);
-    &:focus {
-      color: inherit;
-      background-color: setcolor('dark', bg);
-    }
-  }
-  code {
-    background-color: rgba(setcolor('dark', fg), .3);
-  }
-  .notification-toast {
-    .bubble {
-      @include theme('dark');
-      background-color: rgba(setcolor('dark', bg), .9);
-      &-details {
-        img {
-          filter: invert(1);
-        }
-      }
-    }
-  }
-  @include respond-to('mobile') {
-    .hide-on-mobile {
-      color: setcolor('dark', fg) !important;
-      background-color: setcolor('dark', bg) !important;
-    }
-  }
 }

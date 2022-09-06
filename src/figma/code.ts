@@ -1,6 +1,10 @@
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
-figma.showUI(__html__, { width: 300, height: 220 });
+figma.showUI(__html__, { 
+  width: 300, 
+  height: 220,
+  themeColors: true
+});
 
 function addGuides(sel: any, guide: any) {
   const selection = sel;
