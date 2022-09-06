@@ -4,5 +4,19 @@
 	"api": "1.0.0",
 	"editorType": ["figma"],
 	"main": "dist/code.js",
+	"parameterOnly": false,
+	"parameters": [
+		{
+			"name": "Type",
+			"key": "type",
+			"description": "Would you like to use Columns, or Rows?"
+		},
+		{
+			"name": "Spacing",
+			"key": "spacing",
+			"description": "How much margin would you like to add?",
+			"allowFreeform": true
+		}
+	],
 	"ui": "dist/ui.html"
 }

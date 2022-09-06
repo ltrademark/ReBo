@@ -2,12 +2,23 @@
 declare const figma: PluginAPI
 declare const __html__: string
 
+type ArgFreeEventType =
+  | 'selectionchange'
+  | 'currentpagechange'
+  | 'close'
+  | 'timerstart'
+  | 'timerstop'
+  | 'timerpause'
+  | 'timerresume'
+  | 'timeradjust'
+  | 'timerdone'
+
 interface PluginAPI {
   readonly apiVersion: "1.0.0"
   readonly command: string
   readonly root: DocumentNode
   readonly viewport: ViewportAPI
-  notify(arg0: string): void
+  notify(message: string, options?: NotificationOptions): NotificationHandler
   closePlugin(message?: string): void
 
   showUI(html: string, options?: ShowUIOptions): void
@@ -15,10 +26,24 @@ interface PluginAPI {
 
   readonly clientStorage: ClientStorageAPI
 
+  readonly parameters: ParametersAPI
+
   getNodeById(id: string): BaseNode | null
   getStyleById(id: string): BaseStyle | null
 
   currentPage: PageNode
+
+  on(type: ArgFreeEventType, callback: () => void): void
+  on(type: 'run', callback: (event: RunEvent) => void): void
+  on(type: 'drop', callback: (event: DropEvent) => boolean): void
+
+  once(type: ArgFreeEventType, callback: () => void): void
+  once(type: 'run', callback: (event: RunEvent) => void): void
+  once(type: 'drop', callback: (event: DropEvent) => boolean): void
+
+  off(type: ArgFreeEventType, callback: () => void): void
+  off(type: 'run', callback: (event: RunEvent) => void): void
+  off(type: 'drop', callback: (event: DropEvent) => boolean): void
 
   readonly mixed: symbol
 
@@ -61,6 +86,22 @@ interface ClientStorageAPI {
   setAsync(key: string, value: any): Promise<void>
 }
 
+interface NotificationOptions {
+  timeout?: number
+  error?: boolean
+  onDequeue?: (reason: NotifyDequeueReason) => void
+  button?: {
+    text: string
+    action: () => boolean | void
+  }
+}
+
+type NotifyDequeueReason = 'timeout' | 'dismiss' | 'action_button_click'
+
+interface NotificationHandler {
+  cancel: () => void
+}
+
 type ShowUIOptions = {
   visible?: boolean
   title?: string
@@ -94,7 +135,66 @@ interface ViewportAPI {
   scrollAndZoomIntoView(nodes: ReadonlyArray<BaseNode>): void
   readonly bounds: Rect
 }
+interface ParameterValues {
+  [key: string]: any
+}
 
+interface SuggestionResults {
+  setSuggestions(
+    suggestions: Array<
+      | string
+      | {
+          name: string
+          data?: any
+          icon?: string | Uint8Array
+          iconUrl?: string
+        }
+    >,
+  ): void
+  setError(message: string): void
+  setLoadingMessage(message: string): void
+}
+
+type ParameterInputEvent<ParametersType = ParameterValues> = {
+  query: string
+  key: string
+  parameters: Partial<ParametersType>
+  result: SuggestionResults
+}
+
+interface ParametersAPI {
+  on(type: 'input', callback: (event: ParameterInputEvent) => void): void
+  once(type: 'input', callback: (event: ParameterInputEvent) => void): void
+  off(type: 'input', callback: (event: ParameterInputEvent) => void): void
+}
+
+interface RunEvent<ParametersType = ParameterValues | undefined> {
+  command: string
+  parameters: ParametersType
+}
+
+interface DropEvent {
+  node: BaseNode | SceneNode
+  x: number
+  y: number
+  absoluteX: number
+  absoluteY: number
+  items: DropItem[]
+  files: DropFile[]
+  dropMetadata?: any
+}
+
+interface DropItem {
+  type: string
+  data: string
+}
+
+interface DropFile {
+  name: string
+  type: string
+  getBytesAsync(): Promise<Uint8Array>
+  getTextAsync(): Promise<string>
+}
 ////////////////////////////////////////////////////////////////////////////////
 // Datatypes
 
