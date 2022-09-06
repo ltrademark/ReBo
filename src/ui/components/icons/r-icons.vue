@@ -46,14 +46,14 @@
       stroke-linecap:round;
       fill: none;
       &.ui-danger {
-        stroke: var(--red);
+        stroke: rgba(var(--red), 1);
       }
     }
     .fl {
       fill: currentColor;
       stroke: none;
       &.ui-danger {
-        fill: var(--red);
+        fill: rgba(var(--red), 1);
       }
     }
   }

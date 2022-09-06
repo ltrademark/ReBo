@@ -5,6 +5,7 @@
   --accent: var(--figma-color-bg-brand);
   --accent-hover: var(--figma-color-bg-brand-hover);
   --accent-active: var(--figma-color-bg-brand-pressed);
+  --red: 227, 32, 32; // #E32020
   --br: 3px;
   accent-color: var(--accent);
   margin: 0;
@@ -70,12 +71,6 @@ code {
   --btn-bg: var(--figma-color-bg);
 
   @include buttonDefault();
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  flex-shrink: inherit;
   color: var(--btn-fg);
   background-color: var(--btn-bg);
   z-index: 1;

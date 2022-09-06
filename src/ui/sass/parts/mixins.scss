@@ -50,6 +50,12 @@
 @mixin buttonDefault() {
   // -webkit-tap-highlight-color: rgba(#000, 0);
   // cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-shrink: inherit;
   font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
@@ -57,4 +63,5 @@
   letter-spacing: 0.01em;
   outline: none;
   border: none;
+  border-radius: var(--br, 3px);
 }

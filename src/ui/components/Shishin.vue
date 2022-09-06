@@ -70,8 +70,8 @@
         <ul class="gg-app--view_saved-guideslist" :class="{'open' : actionTrayOpen}" v-if="storedData.length > 0">
           <li v-for="(guide, idx) in storedData" class="button button--secondary" :key="idx">
             <p @click.stop="addSavedGuide(idx)">{{guide.name}}</p>
-            <b class="icon-button" @click="removeItem(idx)">
-              <span class="icon icon--trash"></span>
+            <b class="icon-button" @click="removeItem(idx)" :title="`Delete ${guide.name}`">
+              <icon name="trash"></icon>
             </b>
           </li>
         </ul>
@@ -574,7 +574,7 @@
         height: calc(100% - 56px);
         overflow-y: auto;
         overflow-x: hidden;
-        @include custom-scrollbar($c: #787878);
+        @include custom-scrollbar($c: var(--figma-color-border));
         &-guideslist {
           margin: 0;
           padding: 0;
@@ -585,7 +585,7 @@
               margin-top: 5px;
             }
             &:hover {
-              .icon {
+              .icon-button {
                 opacity: 1;
               }
             }
@@ -595,17 +595,28 @@
               text-overflow: ellipsis;
               white-space: nowrap;
               overflow: hidden;
+              margin: 0;
               z-index: 1;
             }
-            .icon {
+            .icon-button {
               opacity: 0;
-              position: absolute;
-              top: 50%;
-              right: 0;
-              transform: translateY(-50%);
-              z-index: 2;
-              &:hover {
-                background-position: 0 -4em;
+              font-size: 19px;
+              .r-icon {
+                position: absolute;
+                top: 50%;
+                right: 0;
+                transform: translateY(-50%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 28px;
+                height: 28px;
+                border-radius: var(--br, 3px);
+                z-index: 2;
+                &:hover {
+                  color: rgba(var(--red), 1);
+                  background-color: rgba(var(--red), .2);
+                }
               }
             }
           }
@@ -805,8 +816,5 @@
         font-size: 20px;
       }
     }
-  }
-  .ui-danger {
-    --red: #E32020;
   }
 </style>
