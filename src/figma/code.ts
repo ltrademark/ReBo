@@ -2,7 +2,7 @@
 /* eslint-disable */
 figma.showUI(__html__, { 
   width: 300, 
-  height: 220,
+  height: 225,
   themeColors: true
 });
 

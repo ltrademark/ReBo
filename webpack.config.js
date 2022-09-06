@@ -65,11 +65,20 @@ module.exports = (env, argv) => ({
         }
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gif|pdf|md)$/,
         loader: "file-loader",
         options: {
           name: "[name].[ext]?[hash]"
         }
+      },
+      {
+       test: /\.svg$/,
+       use: [{
+        loader: 'html-loader',
+        options: {
+          minimize: true
+        }
+        }]
       }
     ]
   },

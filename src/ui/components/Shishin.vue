@@ -9,22 +9,25 @@
       <div class="gg-app--view_cols"  v-if="currentView == 0">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
-            <i class="gg-icons gg-icons--margin-left"></i>
+            <!-- <i class="gg-icons gg-icons--margin-left"></i> -->
+            <icon name="margin-left"></icon>
             <input type="number" min="1" max="1000" v-if="!colMarginsLinked" v-model.number="gPosition.marginLeft" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="colMarginsLinked" v-model.number="gPosition.marginLRlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
           </div>
-          <div class="gg-input gg-input--link" :class="{'linked' : colMarginsLinked}">
-            <i class="icon " :class="colMarginsLinked ? 'icon--link-connected icon--blue' : 'icon--link-broken'" @click="colMarginsLinked=!colMarginsLinked"></i>
+          <div class="gg-input gg-input--link" :class="{'linked' : colMarginsLinked}" @click="colMarginsLinked=!colMarginsLinked">
+            <icon :name="colMarginsLinked ? 'linked' : 'unlinked'"></icon>
           </div>
           <div class="gg-input gg-input--num">
-            <i class="gg-icons gg-icons--margin-right"></i>
+            <!-- <i class="gg-icons gg-icons--margin-right"></i> -->
+            <icon name="margin-right"></icon>
             <input type="number" min="1" max="1000" v-if="!colMarginsLinked" v-model.number="gPosition.marginRight" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="colMarginsLinked" v-model.number="gPosition.marginLRlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
           </div>
         </div>
         <div class="gg-row">
           <div class="gg-input gg-input--slide">
-            <i class="gg-icons gg-icons--columns"></i>
+            <!-- <i class="gg-icons gg-icons--columns"></i> -->
+            <icon name="columns"></icon>
             <b>{{ gridColumnsCount }}</b>
             {{gPosition.gridCols !== 1 ? 'Columns' : 'Column'}}
             <div class="range-track">
@@ -36,22 +39,25 @@
       <div class="gg-app--view_rows" v-if="currentView == 1">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
-            <i class="gg-icons gg-icons--margin-top"></i>
+            <!-- <i class="gg-icons gg-icons--margin-top"></i> -->
+            <icon name="margin-top"></icon>
             <input type="number" min="1" max="1000" v-if="!rowMarginsLinked" v-model.number="gPosition.marginTop" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="rowMarginsLinked" v-model.number="gPosition.marginTBlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
           </div>
-          <div class="gg-input gg-input--link" :class="{'linked' : rowMarginsLinked}">
-            <i class="icon " :class="rowMarginsLinked ? 'icon--link-connected icon--blue' : 'icon--link-broken'" @click="rowMarginsLinked=!rowMarginsLinked"></i>
+          <div class="gg-input gg-input--link" :class="{'linked' : rowMarginsLinked}" @click="rowMarginsLinked=!rowMarginsLinked">
+            <icon :name="rowMarginsLinked ? 'linked' : 'unlinked'"></icon>
           </div>
           <div class="gg-input gg-input--num">
-            <i class="gg-icons gg-icons--margin-bottom"></i>
+            <!-- <i class="gg-icons gg-icons--margin-bottom"></i> -->
+            <icon name="margin-bottom"></icon>
             <input type="number" min="1" max="1000" v-if="!rowMarginsLinked" v-model.number="gPosition.marginBottom" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="rowMarginsLinked" v-model.number="gPosition.marginTBlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
           </div>
         </div>
         <div class="gg-row">
           <div class="gg-input gg-input--slide">
-            <i class="gg-icons gg-icons--rows"></i>
+            <!--<i class="gg-icons gg-icons--rows"></i>-->
+            <icon name="rows"></icon>
             <b>{{ gridRowsCount }}</b>
             {{gPosition.gridRows !== 1 ? 'Rows' : 'Row'}}
             <div class="range-track">
@@ -74,18 +80,32 @@
     </div>
     <div class="gg-app--controls" v-if="currentView < 2">
       <div class="gg-app--controls_top">
-        <div @click="addIndividualGuide('edgeLeft')" class="gg-icons gg-icons--left-edge" title="Add Guide to Left Edge"></div>
-        <div @click="addIndividualGuide('centerVer')" class="gg-icons gg-icons--center-ver" title="Add Guide to the center vertically"></div>
-        <div @click="addIndividualGuide('edgeRight')" class="gg-icons gg-icons--right-edge" title="Add Guide to Right Edge"></div>
-        <div @click="clearAll()" class="gg-icons gg-icons--clear" title="Clear All Guides"></div>
-        <div @click="addIndividualGuide('edgeTop')" class="gg-icons gg-icons--top-edge" title="Add Guide to Top Edge"></div>
-        <div @click="addIndividualGuide('centerHor')" class="gg-icons gg-icons--center-hor" title="Add to the center horizontally"></div>
-        <div @click="addIndividualGuide('edgeBottom')" class="gg-icons gg-icons--bottom-edge" title="Add Guide to Bottom Edge"></div>
+        <div @click="addIndividualGuide('edgeLeft')" title="Add Guide to Left Edge">
+          <icon name="left-edge"></icon>
+        </div>
+        <div @click="addIndividualGuide('centerVer')" title="Add Guide to the center vertically">
+          <icon name="center-v"></icon>
+        </div>
+        <div @click="addIndividualGuide('edgeRight')" title="Add Guide to Right Edge">
+          <icon name="right-edge"></icon>
+        </div>
+        <div @click="clearAll()" title="Clear All Guides">
+          <icon name="clear"></icon>
+        </div>
+        <div @click="addIndividualGuide('edgeTop')" title="Add Guide to Top Edge">
+          <icon name="top-edge"></icon>
+        </div>
+        <div @click="addIndividualGuide('centerHor')" title="Add to the center horizontally">
+          <icon name="center-h"></icon>
+        </div>
+        <div @click="addIndividualGuide('edgeBottom')" title="Add Guide to Bottom Edge">
+          <icon name="bottom-edge"></icon>
+        </div>
       </div>
       <div class="gg-app--controls_bottom">
         <button class="button" @click="inputActivity ? addGuides() : ''" :class="inputActivity ? 'button--primary' : 'button--secondary button--disabled'">Add Guides</button>
         <div class="additional-controls button button--secondary" @click="actionTrayOpen=!actionTrayOpen" v-if="inputActivity">
-          <i class="gg-icons gg-icons--caret-up" :style="actionTrayOpen ? 'transform: rotate(180deg)' : ''"></i>
+          <icon name="caret" :style="actionTrayOpen ? 'transform: rotate(180deg)' : ''"></icon>
         </div>
         <ul class="gg-app--actions" :class="{'open' : actionTrayOpen}">
           <li class="button" @click="resetFields()" :class="inputActivity ? 'button--secondary' : 'button--disabled'">Reset Fields</li>
@@ -108,6 +128,7 @@
 </template>
 
 <script>
+  import icon from './icons/r-icons';
   export default {
     data() {
       return {
@@ -463,6 +484,9 @@
       updatePosition(e) {
         console.log('drag left to right', e.movementX)
       }
+    },
+    components: {
+      icon
     }
   };
 </script>
@@ -505,60 +529,6 @@
     appearance: none;
   }
 
-  // .btn {
-  //   --btn-fg: var(--figma-color-text);
-  //   --btn-bg: var(--figma-color-bg);
-
-  //   position: relative;
-  //   @include buttonDefault();
-  //   color: var(--btn-fg);
-  //   background-color: var(--btn-bg);
-  //   z-index: 1;
-  //   &:focus,
-  //   &:hover {
-  //     --btn-bg: var(--figma-color-bg-secondary);
-  //     outline: none;
-  //   }
-  //   &--primary {
-  //     --btn-fg: #fff;
-  //     --btn-bg: var(--accent);
-  //     &:focus,
-  //     &:hover {
-  //       --btn-bg: var(--accent-hover);
-  //     }
-  //   }
-  //   &--secondary {
-  //     border: 1px solid currentColor !important;
-  //     &:focus,
-  //     &:hover {
-  //       --btn-bg: var(--figma-color-bg-secondary);
-  //       border-color: var(--figma-color-bg-tertiary);
-  //     }
-  //   }
-  //   &--default {
-  //     color: inherit;
-  //     user-select: none;
-  //     border: 1px solid var(--figma-color-border);
-  //     &:focus,
-  //     &:hover {
-  //       --btn-bg: var(--accent-hover);
-  //     }
-  //   }
-  //   &-square {
-  //     padding: 0;
-  //     text-align: center;
-  //     min-width: $searchbar + 0px;
-  //     min-height: $searchbar + 0px;
-  //   }
-  //   svg,
-  //   img {
-  //     display: inline-block;
-  //     vertical-align: middle;
-  //     width: auto;
-  //     height: 1em;
-  //   }
-  // }
-  
   .gg-app {
     position: relative;
     display: block;
@@ -586,8 +556,10 @@
           font-weight: 600;
           padding: 10px 5px;
           color: var(--figma-color-text);
+          opacity: .6;
           &_active {
             color: var(--accent);
+            opacity: 1;
           }
           &:last-child {
             border-left: 1px solid var(--figma-color-border);
@@ -655,23 +627,35 @@
       &_top {
         position: relative;
         display: flex;
+        gap: 5px;
         width: 100%;
         padding: 10px;
       }
       &_top {
+        padding: 5px;
         justify-content: space-between;
-        background-color: var(--figma-color-bg-secondary  );
+        background-color: var(--figma-color-bg-secondary);
         div {
-          cursor: pointer;
+          cursor: default;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          aspect-ratio: 1/1;
+          padding: 3px;
+          font-size: 20px;
+          border-radius: var(--br, 3px);
+          &:hover {
+            background-color: var(--figma-color-bg-tertiary);
+          }
         }
       }
       &_bottom {
         > .button + .button {
-          margin-left: 5px;
           padding: 5px;
-          .gg-icons {
-            background-size: 35px;
-          }
+        }
+        .additional-controls  {
+          font-size: 20px;
         }
       }
     }
@@ -749,6 +733,7 @@
   
   .gg-row {
     display: flex;
+    gap: 10px;
     width: 100%;
     & + & {
       margin-top: 10px;
@@ -758,27 +743,29 @@
   .gg-input {
     display: flex;
     align-items: center;
+    gap: 5px;
     width: 100%;
     padding: 5px;
     color: var(--figma-color-text);
     background: var(--figma-color-bg-secondary);
     border-radius: var(--br, 3px);
-    & + & {
-      margin-left: 5px;
-    }
-    > * + * {
-      margin-left: .2rem;
-    }
     input {
       color: currentColor;
     }
     &--link {
       background: none;
       justify-content: center;
-      flex-shrink: 2;
+      width: 30px;
+      flex-shrink: 0;
+      font-size: 20px;
       padding: 0;
       &.linked {
         background: var(--figma-color-bg-secondary);
+      }
+    }
+    &--num {
+      .r-icon {
+        font-size: 20px;
       }
     }
     &--slide {
@@ -814,6 +801,12 @@
           margin: 0;
         }
       }
+      .r-icon {
+        font-size: 20px;
+      }
     }
+  }
+  .ui-danger {
+    --red: #E32020;
   }
 </style>

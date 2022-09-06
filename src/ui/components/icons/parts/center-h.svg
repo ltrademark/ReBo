@@ -1,0 +1,5 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <path class="st" d="M10 1L10 7M10 7L13 4M10 7L7 4" />
+ <path class="st" d="M10 19L10 13M10 13L7 16M10 13L13 16" />
+ <line class="accented-st" x1="1" y1="-1" x2="15" y2="-1" transform="matrix(-1 9.83506e-08 7.86805e-08 1 18 11)" />
+</svg>
