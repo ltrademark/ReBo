@@ -4,24 +4,36 @@
 	"api": "1.0.0",
 	"editorType": ["figma"],
 	"main": "dist/code.js",
+	"ui": "dist/ui.html",
 	"parameterOnly": false,
-	"parameters": [
+	"menu": [
 		{
-			"name": "Action",
-			"key": "actions",
-			"description": "What would you like to do?"
-		},
-		{
-			"name": "Direction",
-			"key": "direction",
-			"description": "Where would you like to add margins?"
-		},
-		{
-			"name": "Spacing",
-			"key": "spacing",
-			"description": "How much margin would you like to add?",
-			"allowFreeform": true
+			"name": "Add Margins",
+			"command": "add-margins",
+			"parameters": [{
+					"name": "Direction",
+					"key": "direction",
+					"description": "Where would you like to add margins?"
+				}, {
+					"name": "Spacing",
+					"key": "spacing",
+					"description": "How much margin would you like to add?",
+					"allowFreeform": true
+				}]
+		}, {
+			"name": "Split Center",
+			"command": "split-center",
+			"parameters": [{
+					"name": "Direction",
+					"key": "direction",
+					"description": "Where would you like to add margins?"
+				}]
+		}, {
+			"name": "Clear All Guides",
+			"command": "clear"
+		}, {
+			"name": "Open Window",
+			"command": "run-ui"
 		}
-	],
-	"ui": "dist/ui.html"
+	]
 }

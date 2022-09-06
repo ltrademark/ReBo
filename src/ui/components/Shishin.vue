@@ -9,7 +9,6 @@
       <div class="gg-app--view_cols"  v-if="currentView == 0">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
-            <!-- <i class="gg-icons gg-icons--margin-left"></i> -->
             <icon name="margin-left"></icon>
             <input type="number" min="1" max="1000" v-if="!colMarginsLinked" v-model.number="gPosition.marginLeft" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="colMarginsLinked" v-model.number="gPosition.marginLRlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
@@ -18,7 +17,6 @@
             <icon :name="colMarginsLinked ? 'linked' : 'unlinked'"></icon>
           </div>
           <div class="gg-input gg-input--num">
-            <!-- <i class="gg-icons gg-icons--margin-right"></i> -->
             <icon name="margin-right"></icon>
             <input type="number" min="1" max="1000" v-if="!colMarginsLinked" v-model.number="gPosition.marginRight" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="colMarginsLinked" v-model.number="gPosition.marginLRlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
@@ -26,7 +24,6 @@
         </div>
         <div class="gg-row">
           <div class="gg-input gg-input--slide">
-            <!-- <i class="gg-icons gg-icons--columns"></i> -->
             <icon name="columns"></icon>
             <b>{{ gridColumnsCount }}</b>
             {{gPosition.gridCols !== 1 ? 'Columns' : 'Column'}}
@@ -39,7 +36,6 @@
       <div class="gg-app--view_rows" v-if="currentView == 1">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
-            <!-- <i class="gg-icons gg-icons--margin-top"></i> -->
             <icon name="margin-top"></icon>
             <input type="number" min="1" max="1000" v-if="!rowMarginsLinked" v-model.number="gPosition.marginTop" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="rowMarginsLinked" v-model.number="gPosition.marginTBlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
@@ -48,7 +44,6 @@
             <icon :name="rowMarginsLinked ? 'linked' : 'unlinked'"></icon>
           </div>
           <div class="gg-input gg-input--num">
-            <!-- <i class="gg-icons gg-icons--margin-bottom"></i> -->
             <icon name="margin-bottom"></icon>
             <input type="number" min="1" max="1000" v-if="!rowMarginsLinked" v-model.number="gPosition.marginBottom" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
             <input type="number" min="1" max="1000" v-if="rowMarginsLinked" v-model.number="gPosition.marginTBlinked" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Margin" />
@@ -56,7 +51,6 @@
         </div>
         <div class="gg-row">
           <div class="gg-input gg-input--slide">
-            <!--<i class="gg-icons gg-icons--rows"></i>-->
             <icon name="rows"></icon>
             <b>{{ gridRowsCount }}</b>
             {{gPosition.gridRows !== 1 ? 'Rows' : 'Row'}}
