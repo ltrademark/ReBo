@@ -229,6 +229,7 @@
         onmessage = (event) => {
           let data = event.data.pluginMessage;
           if (data) {
+            console.log("frame", data)
             this.frameWidth = data.frameWidth
             this.frameHeight = data.frameHeight
           }

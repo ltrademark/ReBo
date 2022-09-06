@@ -20,6 +20,8 @@ Easily create an manage guides you create
 ---
 
 ## ✅ To Do
+- ~~implement parameter input~~
+- ~~update to support themes (dark/light/system)~~
 - ~~finish quick-add actions~~
 - ~~finalize UI~~
 - ~~import icons~~
@@ -33,6 +35,5 @@ Easily create an manage guides you create
 - ~~Optimize Saved data and applying saved guides.~~
 
 ## 🪲 Active Bugs
-
 - ~~when adding a saved guide to a new frame, some guides are out of bounds.~~
 - selecting multiple frames and applying margins only respects one frame
