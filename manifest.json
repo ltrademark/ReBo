@@ -7,9 +7,14 @@
 	"parameterOnly": false,
 	"parameters": [
 		{
-			"name": "Type",
-			"key": "type",
-			"description": "Would you like to use Columns, or Rows?"
+			"name": "Action",
+			"key": "actions",
+			"description": "What would you like to do?"
+		},
+		{
+			"name": "Direction",
+			"key": "direction",
+			"description": "Where would you like to add margins?"
 		},
 		{
 			"name": "Spacing",
