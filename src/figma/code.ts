@@ -44,7 +44,7 @@ figma.on('run', ({ command, parameters }: RunEvent) => {
                 }
               });
             } else {
-              figma.notify('Please select a Frame');
+              figma.notify('🪟 Please select a Frame');
             }
             break;
           case 'Vertically':
@@ -69,7 +69,7 @@ figma.on('run', ({ command, parameters }: RunEvent) => {
                 }
               });
             } else {
-              figma.notify('Please select a Frame');
+              figma.notify('🪟 Please select a Frame');
             }
             break;
           default:
@@ -97,7 +97,7 @@ figma.on('run', ({ command, parameters }: RunEvent) => {
                 }
               });
             } else {
-              figma.notify('Please select a Frame');
+              figma.notify('🪟 Please select a Frame');
             }
             break;
           case 'Vertically':
@@ -119,7 +119,7 @@ figma.on('run', ({ command, parameters }: RunEvent) => {
                 }
               });
             } else {
-              figma.notify('Please select a Frame');
+              figma.notify('🪟 Please select a Frame');
             }
             break;
           default:
@@ -133,7 +133,7 @@ figma.on('run', ({ command, parameters }: RunEvent) => {
             selection.guides = [];
           })
         } else {
-          figma.notify('Please select a Frame');
+          figma.notify('🪟 Please select a Frame');
         }
         break;
       default:
@@ -253,7 +253,7 @@ async function startUI() {
           });
         } else {
           // Can only add to frames
-          figma.notify('Please select a Frame');
+          figma.notify('🪟 Please select a Frame');
         }
         break;
       case 'save-guides':
@@ -288,17 +288,27 @@ async function startUI() {
             selection.guides = [];
           })
         } else {
-          figma.notify('Please select a Frame');
+          figma.notify('🪟 Please select a Frame');
         }
         break;
       case 'request-dimensions':
+        let dimensions: { width: number; height: number; }[] = [];
         if(figma.currentPage.selection.length > 0) {
-          let frameWidth = figma.currentPage.selection[0].width;
-          let frameHeight = figma.currentPage.selection[0].height;
-        
-          figma.ui.postMessage({'frameWidth': frameWidth, 'frameHeight': frameHeight});
+          figma.currentPage.selection.forEach((sel) => {
+            let selection = sel as FrameNode;
+            let frameWidth = selection.width;
+            let frameHeight = selection.height;
+            let sizes = {
+              'width': frameWidth,
+              'height': frameHeight
+            };
+            dimensions.push(sizes);
+          });
+          console.log("dimensions: ", dimensions)
+          figma.ui.postMessage({'frames': dimensions});
+          // figma.ui.postMessage({'frameWidth': frameWidth, 'frameHeight': frameHeight});
         } else {
-          figma.notify('Please Select a Frame');
+          figma.notify('🪟 Please select a Frame');
         }
         break;
       case 'cancel':

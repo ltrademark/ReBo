@@ -130,6 +130,7 @@
         views: ['Columns', 'Rows', 'Saved Guides'],
         frameWidth: null,
         frameHeight: null,
+        frames: [],
         colMarginsLinked: true,
         rowMarginsLinked: true,
         gPosition: {
@@ -230,8 +231,11 @@
           let data = event.data.pluginMessage;
           if (data) {
             console.log("frame", data)
-            this.frameWidth = data.frameWidth
-            this.frameHeight = data.frameHeight
+            // this.frameWidth = data.frameWidth
+            // this.frameHeight = data.frameHeight
+            this.frames = data.frames;
+            this.frameWidth = data.frames[0].width
+            this.frameHeight = data.frames[0].height
           }
         } 
       },
