@@ -5,6 +5,7 @@
     "module": "es6",
     "target": "es6",
     "allowJs": true,
+    "jsx": "preserve",
     "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
   }
 }
