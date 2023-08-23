@@ -1,27 +1,52 @@
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
 figma.parameters.on('input', ({ parameters, key, query, result }: ParameterInputEvent ) => {
+  console.log(parameters, key, query)
+  if (figma.currentPage.selection.length === 0) {
+    result.setError('Please select one or mode nodes first')
+    return
+  }
   switch (key) {
-    case 'direction':
-      let direction = ['Horizontally', 'Vertically'];
-      result.setSuggestions(direction.filter((s) => s.includes(query)));
+    case 'reboQuery':
+      let menu = [
+        { name: 'Add Margins', data: 'add-margins' },
+        { name: 'Split Center', data: 'split-center' },
+        { name: 'Clear all Guides', data: 'clear' },
+      ];
+      result.setSuggestions(menu);
       break;
-    case 'spacing':
-      result.setLoadingMessage('');
+    case 'marginDirection':
+      let marginDir = ['Horizontally', 'Vertically'];
+      result.setSuggestions(marginDir.filter((s) => s.includes(query)));
+      break;
+    case 'splitCenter':
+      let splitDir = ['Horizontally', 'Vertically'];
+      result.setSuggestions(splitDir.filter((s) => s.includes(query)));
       break;
     default:
+      switch (parameters.reboQuery) {
+        case 'add-margins':
+          key = 'marginDirection'
+          break;
+        case 'split-center':
+          key = 'splitCenter'
+          break;
+        default:
+          return;
+      }
       return;
   }
 });
-figma.once('run', ({ command }: RunEvent) => {
-  if(command == 'run-ui')
-    startUI();
-})
+// Runs the first time you hit "tab"
+// figma.parameters.once('input', ({ parameters }: ParameterInputEvent) => {
+//   console.log('running from a once-instance: ', parameters)
+// })
 figma.on('run', ({ command, parameters }: RunEvent) => {
-  if(parameters || command) {
-    switch(command) {
+  if(parameters) {
+    console.log("figma running: ", command, parameters)
+    switch(parameters.reboQuery) {
       case 'add-margins':
-        switch (parameters.direction) {
+        switch (parameters.marginDirection) {
           case 'Horizontally':
             if(figma.currentPage.selection.length > 0) {
               figma.currentPage.selection.forEach((sel) => {
@@ -77,7 +102,7 @@ figma.on('run', ({ command, parameters }: RunEvent) => {
         }
         break;
       case 'split-center':
-        switch (parameters.direction) {
+        switch (parameters.splitCenter) {
           case 'Horizontally':
             if(figma.currentPage.selection.length > 0) {
               figma.currentPage.selection.forEach((sel) => {
@@ -169,6 +194,13 @@ function makeFrames(sel: any) {
     selection.y = 0;
   }
   figma.currentPage.selection = nodes;
+}
+function clearAll(sel: any) {
+  const selection = sel;
+  selection.forEach((cs: any) => {
+    let selection = cs as FrameNode;
+    selection.guides = [];
+  })
 }
 async function startUI() {
   figma.showUI(__html__, { 
@@ -285,6 +317,7 @@ async function startUI() {
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel) => {
             let selection = sel as FrameNode;
+            selection.setRelaunchData({ "clear-all": '' })
             selection.guides = [];
           })
         } else {

@@ -1,39 +1,43 @@
 {
-	"name": "ReBo",
-	"id": "949842685113537477",
-	"api": "1.0.0",
-	"editorType": ["figma"],
-	"main": "dist/code.js",
-	"ui": "dist/ui.html",
-	"parameterOnly": false,
-	"menu": [
-		{
-			"name": "Add Margins",
-			"command": "add-margins",
-			"parameters": [{
-					"name": "Direction",
-					"key": "direction",
-					"description": "Where would you like to add margins?"
-				}, {
-					"name": "Spacing",
-					"key": "spacing",
-					"description": "How much margin would you like to add?",
-					"allowFreeform": true
-				}]
-		}, {
-			"name": "Split Center",
-			"command": "split-center",
-			"parameters": [{
-					"name": "Direction",
-					"key": "direction",
-					"description": "Where would you like to add margins?"
-				}]
-		}, {
-			"name": "Clear All Guides",
-			"command": "clear"
-		}, {
-			"name": "Open Window",
-			"command": "run-ui"
-		}
-	]
+  "name": "ReBo",
+  "id": "949842685113537477",
+  "api": "1.0.0",
+  "editorType": [
+    "figma"
+  ],
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "parameterOnly": false,
+  "parameters": [
+    {
+      "name": "Option",
+      "key": "reboQuery",
+      "description": "What would you like to do?"
+    },
+    {
+      "name": "Add Margins",
+      "key": "marginDirection",
+      "description": "Where would you like to add margins?"
+    },
+    {
+      "name": "Add Spacing",
+      "key": "spacing",
+      "description": "How much margin would you like to add?",
+      "allowFreeform": true
+    },
+    {
+      "name": "Split Center",
+      "key": "splitCenter",
+      "description": "How would you like to split your selection?"
+    },
+    {
+      "name": "Clear All Guides",
+      "key": "clear",
+      "description": "Clear all guides from frame",
+      "optional": true
+    }
+  ],
+  "relaunchButtons": [
+    {"command": "clear-all", "name": "Clear all guides"}
+  ]
 }
