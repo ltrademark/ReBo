@@ -198,8 +198,8 @@ function makeFrames(sel: any) {
 function clearAll(sel: any) {
   const selection = sel;
   selection.forEach((cs: any) => {
-    let selection = cs as FrameNode;
-    selection.guides = [];
+    let selFrame = cs as FrameNode;
+    selFrame.guides = [];
   })
 }
 async function startUI() {
@@ -315,11 +315,7 @@ async function startUI() {
         break;
       case 'clear-all':
         if(figma.currentPage.selection.length > 0) {
-          figma.currentPage.selection.forEach((sel) => {
-            let selection = sel as FrameNode;
-            selection.setRelaunchData({ "clear-all": '' })
-            selection.guides = [];
-          })
+          clearAll(figma.currentPage.selection)
         } else {
           figma.notify('🪟 Please select a Frame');
         }
