@@ -1,3 +1,4 @@
+@use 'sass:math';
 @import 'parts/config';
 
 :root {
@@ -108,7 +109,7 @@ code {
       --btn-bg: var(--accent-hover);
     }
     &:not(.active) {
-      outline-offset: ($gap/2 - ($border-width/2))+0px;
+      outline-offset: math.div($gap, 2) - math.div($border-width,2) * 1px;
       &:focus,
       &:hover {
         outline: $border-width+0px dashed var(--figma-color-bg-tertiary);
