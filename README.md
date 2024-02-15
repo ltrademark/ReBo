@@ -1,3 +1,4 @@
+![ReBo](https://static.basedcdn.com/madebyLTM/src/assets/rebo-icon.png)
 # ReBo | Guides for Figma
 
 Easily create an manage guides you create
