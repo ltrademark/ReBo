@@ -129,14 +129,16 @@ async function startUI() {
     switch (msg.type) {
       case 'add-guides':
         if(figma.currentPage.selection.length > 0) {
-          figma.currentPage.selection.forEach((sel) => {
+          console.log(figma.currentPage.selection)
+          figma.currentPage.selection.forEach((sel, idx) => { 
             let selection = sel as FrameNode;
             let guideData = msg.data;
+
             if(selection.type === "FRAME") {
-              addGuides(selection, guideData);
+              addGuides(selection, guideData[0][idx]);
             } else {
               makeFrames(selection);
-              addGuides(selection.parent, guideData);
+              addGuides(selection.parent, guideData[0][idx]);
             }
           });
         } else {
@@ -250,7 +252,6 @@ async function startUI() {
             };
             dimensions.push(sizes);
           });
-          console.log("dimensions: ", dimensions)
           figma.ui.postMessage({'frames': dimensions});
           // figma.ui.postMessage({'frameWidth': frameWidth, 'frameHeight': frameHeight});
         } else {

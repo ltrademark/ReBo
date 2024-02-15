@@ -230,9 +230,6 @@
         onmessage = (event) => {
           let data = event.data.pluginMessage;
           if (data) {
-            console.log("frame", data)
-            // this.frameWidth = data.frameWidth
-            // this.frameHeight = data.frameHeight
             this.frames = data.frames;
             this.frameWidth = data.frames[0].width
             this.frameHeight = data.frames[0].height
@@ -263,63 +260,27 @@
         parent.postMessage({ pluginMessage: { type: 'split' , dirType} }, '*');
       },
       addGuides() {
-        let allData= [];
-        let margins= [];
-        let columns= [];
-        let rows= [];
         this.getFrameDimensions();
+        let allData = [];
+        let margins = [];
+        let columns = [] = [];
+        let rows = [] = [];
         setTimeout(()=>{
           if(this.currentView == 0) {
             // we columns
             if(this.inputActivity) {
-              // some values are filled out, lets filter out which
-              // margins first
-              if(this.colMarginsLinked) {
-                if (this.gPosition.marginLRlinked) {
-                  let marginLeft = [{
-                    axis: "X",
-                    offset: this.gPosition.marginLRlinked
-                  }];
-                  let marginRight = [{
-                    axis: "X",
-                    offset: this.frameWidth - this.gPosition.marginLRlinked
-                  }];
-                  margins = [...marginLeft, ...marginRight]
-                }
-              } else {
-                if(this.gPosition.marginLeft) {
-                  let marginLeft = {
-                    axis: "X",
-                    offset: this.gPosition.marginLeft
-                  };
-                  margins.push(marginLeft)
-                }
-                if(this.gPosition.marginRight) {
-                  let marginRight = {
-                    axis: "X",
-                    offset: this.frameWidth - this.gPosition.marginRight
-                  };
-                  margins.push(marginRight)
-                }
+              this.frames.forEach(e => {
+                // margins first
+                margins.push(this.marginsX(e.width))
+                // now lets check columns
+                columns.push(this.columns(e.width))
+              });
+              if(columns[0] !== undefined) {
+                allData.push(columns)
               }
-              // now lets check columns
-              if(this.gPosition.gridCols > 0) {
-                let getLeftMargin = this.colMarginsLinked ? this.gPosition.marginLRlinked ? this.gPosition.marginLRlinked : this.gPosition.marginLeft : this.gPosition.marginLeft;
-                let getWidth = !this.colMarginsLinked ? (this.gPosition.marginRight ? (this.frameWidth - this.gPosition.marginRight) : this.frameWidth) - (getLeftMargin ? getLeftMargin : 0) : (this.frameWidth - this.gPosition.marginLRlinked) - getLeftMargin;
-                let getColumn = getWidth / this.gPosition.gridCols;
-
-                for(let i = 1; i < this.gPosition.gridCols; i++) {
-                  let smartOffset = getLeftMargin ? Math.round(getColumn * i + getLeftMargin) : Math.round(getColumn * i);
-                  let colPos = {
-                    axis: "X",
-                    offset: smartOffset
-                  };
-                  columns.push(colPos)
-                }
-              } else {
-                //ignore
+              if(margins[0] !== undefined) {
+                allData.push(margins)
               }
-              allData = [...margins, ...columns];
               this.tempData = allData;
               parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
             } else {
@@ -328,56 +289,18 @@
           } else if(this.currentView == 1) {
             // we rows now
             if(this.inputActivity) {
-              // some values are filled out, lets filter out which
-              // margins first
-              if(this.rowMarginsLinked) {
-                if (this.gPosition.marginTBlinked) {
-                  let marginTop = [{
-                    axis: "Y",
-                    offset: this.gPosition.marginTBlinked
-                  }];
-                  let marginBottom = [{
-                    axis: "Y",
-                    offset: this.frameHeight - this.gPosition.marginTBlinked
-                  }];
-                  margins = [...marginTop, ...marginBottom]
-                }
-              } else {
-                if(this.gPosition.marginTop) {
-                  console.log(this.gPosition.marginTop)
-                  let marginTop = {
-                    axis: "Y",
-                    offset: this.gPosition.marginTop
-                  };
-                  margins.push(marginTop)
-                }
-                if(this.gPosition.marginBottom) {
-                  let marginBottom = {
-                    axis: "Y",
-                    offset: this.frameHeight - this.gPosition.marginBottom
-                  };
-                  margins.push(marginBottom)
-                }
+              this.frames.forEach(e => {
+                // margins first
+                margins.push(this.marginsY(e.height))
+                // now lets check Rows
+                rows.push(this.rows(e.height))
+              });
+              if(rows[0] !== undefined) {
+                allData.push(rows)
               }
-              // now lets check Rows
-              if(this.gPosition.gridRows > 0) {
-                let getTopMargin = this.rowMarginsLinked ? this.gPosition.marginTBlinked ? this.gPosition.marginTBlinked : this.gPosition.marginTop : this.gPosition.marginTop;
-                let getBottomMargin = this.rowMarginsLinked ? this.gPosition.marginTBlinked ? this.gPosition.marginTBlinked : this.gPosition.marginBottom : this.gPosition.marginBottom;
-                let getHeight = !this.rowMarginsLinked ? (this.gPosition.marginBottom ? (this.frameHeight - this.gPosition.marginBottom) : this.frameHeight) - (getTopMargin ? getTopMargin : 0) : (this.frameHeight - this.gPosition.marginTBlinked) - getTopMargin;
-                let getRow = getHeight / this.gPosition.gridRows;
-                
-                for(let i = 1; i < this.gPosition.gridRows; i++) {
-                  let smartOffset = getTopMargin ? Math.round(getRow * i + getTopMargin) : Math.round(getRow * i);
-                  let rowPos = {
-                    axis: "Y",
-                    offset: smartOffset
-                  };
-                  rows.push(rowPos)
-                }
-              } else {
-                //ignore
+              if(margins[0] !== undefined) {
+                allData.push(margins)
               }
-              allData = [...margins, ...rows];
               this.tempData = allData;
               parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
             } else {
@@ -390,6 +313,116 @@
             return;
           }
         },10);
+      },
+      marginsX(width) {
+        let frameWidth = width;
+        if (this.colMarginsLinked) {
+          if (this.gPosition.marginLRlinked) {
+            let marginLeft = {
+              axis: "X",
+              offset: this.gPosition.marginLRlinked
+            };
+            let marginRight = {
+              axis: "X",
+              offset: frameWidth - this.gPosition.marginLRlinked
+            };
+            return [marginLeft, marginRight]
+          }
+        } else {
+          let margins = []
+          if (this.gPosition.marginLeft) {
+            let marginLeft = {
+              axis: "X",
+              offset: this.gPosition.marginLeft
+            };
+            margins.push(marginLeft)
+          }
+          if (this.gPosition.marginRight) {
+            let marginRight = {
+              axis: "X",
+              offset: frameWidth - this.gPosition.marginRight
+            };
+            margins.push(marginRight)
+          }
+          return margins
+        }
+      },
+      marginsY(height) {
+        let frameHeight = height;
+        if (this.rowMarginsLinked) {
+          if (this.gPosition.marginTBlinked) {
+            let marginTop = {
+              axis: "Y",
+              offset: this.gPosition.marginTBlinked
+            };
+            let marginBottom = {
+              axis: "Y",
+              offset: frameHeight - this.gPosition.marginTBlinked
+            };
+            return [marginTop, marginBottom]
+          }
+        } else {
+          let margins = [];
+          if (this.gPosition.marginTop) {
+            console.log(this.gPosition.marginTop)
+            let marginTop = {
+              axis: "Y",
+              offset: this.gPosition.marginTop
+            };
+            margins.push(marginTop)
+          }
+          if (this.gPosition.marginBottom) {
+            let marginBottom = {
+              axis: "Y",
+              offset: frameHeight - this.gPosition.marginBottom
+            };
+            margins.push(marginBottom)
+          }
+          return margins
+        }
+      },
+      columns(width) {
+        let frameWidth = width;
+        if (this.gPosition.gridCols > 0) {
+          let getLeftMargin = this.colMarginsLinked ? this.gPosition.marginLRlinked ? this.gPosition.marginLRlinked : this.gPosition.marginLeft : this.gPosition.marginLeft;
+          let getWidth = !this.colMarginsLinked ? (this.gPosition.marginRight ? (frameWidth - this.gPosition.marginRight) : frameWidth) - (getLeftMargin ? getLeftMargin : 0) : (frameWidth - this.gPosition.marginLRlinked) - getLeftMargin;
+          let getColumn = getWidth / this.gPosition.gridCols;
+          let indColumns = [];
+
+          for (let i = 1; i < this.gPosition.gridCols; i++) {
+            let smartOffset = getLeftMargin ? Math.round(getColumn * i + getLeftMargin) : Math.round(getColumn * i);
+            let colPos = {
+              axis: "X",
+              offset: smartOffset
+            };
+            indColumns.push(colPos)
+          }
+          return indColumns
+        } else {
+          //ignore
+        }
+      },
+      rows(height) {
+        let frameHeight = height;
+        if (this.gPosition.gridRows > 0) {
+          let getTopMargin = this.rowMarginsLinked ? this.gPosition.marginTBlinked ? this.gPosition.marginTBlinked : this.gPosition.marginTop : this.gPosition.marginTop;
+          let getHeight = !this.rowMarginsLinked ? (this.gPosition.marginBottom ? (frameHeight - this.gPosition.marginBottom) : frameHeight) - (getTopMargin ? getTopMargin : 0) : (frameHeight - this.gPosition.marginTBlinked) - getTopMargin;
+          let getRow = getHeight / this.gPosition.gridRows;
+          let indRows = [];
+
+          for (let i = 1; i < this.gPosition.gridRows; i++) {
+            let smartOffset = getTopMargin ? Math.round(getRow * i + getTopMargin) : Math.round(getRow * i);
+            let rowPos = {
+              axis: "Y",
+              offset: smartOffset
+            };
+            indRows.push(rowPos)
+          }
+          console.log(indRows)
+          return indRows
+        } else {
+          //ignore
+        }
       },
       addSavedGuide(dataID){
         let guide = this.storedData[dataID];
