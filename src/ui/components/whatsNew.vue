@@ -23,11 +23,12 @@
    return {
     currentVer: this.$parent.version,
     changelog: [
-     'This section is pretty new, and it came with this update.',
-     'Dark mode support is now here',
-     'Added parameter actions.',
-     'Squashed some bugs with applying guides to multiple frames.',
-     'Updated to use client storage for saving guides.'
+     'New: This section is pretty new, and it came with this update.',
+     'New: Dark mode support is now here',
+     'New: Added parameter actions. Now you can Tab into a few quick actions without opening up the plugin UI.',
+     'New: Added Re-Launch shortcut to the Page node.',
+     'Bug: Apply guide actions to multiple frames in selection.',
+     'Update: Using client storage for saving guides.'
     ]
    }
   }
