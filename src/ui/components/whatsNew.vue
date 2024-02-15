@@ -89,6 +89,7 @@
    padding: 1rem;
    overflow-y: auto;
    overflow-x: hidden;
+   @include custom-scrollbar($c: var(--figma-color-border));
    h4 {
     margin-bottom: 0;
     font-size: 12px;

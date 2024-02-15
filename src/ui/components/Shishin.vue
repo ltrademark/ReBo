@@ -580,9 +580,10 @@
 
     &:not(:has(.gg-app--controls)){
       .gg-app--view {
-        padding: 0;
         height: calc(100% - 36px);
-        overflow-y: auto;
+        &:has(.gg-app--view_whatsnew) {
+          padding: 0;
+        }
       }
     }
     &--tabs {
@@ -628,7 +629,7 @@
       position: relative;
       padding: 10px;
       &_saved {
-        height: calc(100% - 56px);
+        height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
         @include custom-scrollbar($c: var(--figma-color-border));
