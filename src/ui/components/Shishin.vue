@@ -219,7 +219,6 @@
         if (value.length <= size) {
           return value;
         } else {
-          console.log(value, size, value.length)
           return value.substr(0, size) + '...';
         }
       }
@@ -364,7 +363,6 @@
         } else {
           let margins = [];
           if (this.gPosition.marginTop) {
-            console.log(this.gPosition.marginTop)
             let marginTop = {
               axis: "Y",
               offset: this.gPosition.marginTop
@@ -418,7 +416,6 @@
             };
             indRows.push(rowPos)
           }
-          console.log(indRows)
           return indRows
         } else {
           //ignore

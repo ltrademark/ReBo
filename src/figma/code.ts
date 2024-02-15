@@ -21,7 +21,6 @@ figma.parameters.on('input', ({ key, result }: ParameterInputEvent ) => {
 
 figma.on('run', ({ command, parameters }: RunEvent) => {
   if(parameters) {
-    console.log("figma running: ", command, parameters)
     switch(parameters.reboQuery) {
       case 'split-center--v':
         if(figma.currentPage.selection.length > 0) {
@@ -129,7 +128,6 @@ async function startUI() {
     switch (msg.type) {
       case 'add-guides':
         if(figma.currentPage.selection.length > 0) {
-          console.log(figma.currentPage.selection)
           figma.currentPage.selection.forEach((sel, idx) => { 
             let selection = sel as FrameNode;
             let guideData = msg.data;
