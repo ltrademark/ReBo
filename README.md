@@ -1,7 +1,7 @@
 ![ReBo](https://static.basedcdn.com/madebyLTM/src/assets/rebo-icon.png)
 # ReBo | Guides for Figma
 
-Easily create an manage guides you create
+A Figma plugin to help you create and manage guides in your project. You can find the plugin [here](https://www.figma.com/community/plugin/949842685113537477/rebo).
 
 ## 💫 Features
 
@@ -13,14 +13,19 @@ Easily create an manage guides you create
 ✨ KeyCombo! `Control` + `Shift` + `S` to save your current guides
 
 ## 📦 Development
-- Clone Repo
-- First run `yarn` to install packages & dependencies
-- Then, with hopefully no errors, run `yarn dev` to start running the plugin.
-- Run the plugin in Figma to test (be sure to have that console open, just in case).
+1. Clone Repo
+2. Run `yarn` to install packages & dependencies
+3. With hopefully no errors, run `yarn dev` to start running the plugin.
+4. Run the plugin in Figma to test (be sure to have that console open, just in case).
 
 ---
 
 ## ✅ To Do
+- Update Vue to vue3 and find replacement for deprecated packages
+- Eventually Merge columns and rows into a single primary tab.
+- Add "get guides from selection" function for "saved guides".
+
+## 🗑️ Completed
 - ~~implement parameter input~~
 - ~~update to support themes (dark/light/system)~~
 - ~~finish quick-add actions~~
@@ -37,6 +42,8 @@ Easily create an manage guides you create
 - ~~squash bugs~~
 - ~~maybe swap params for a perma re-launch button instead~~
   - ~~or just oversimplify actions/params~~
+
+---
 
 ## 🪲 Active Bugs
 - ~~when adding a saved guide to a new frame, some guides are out of bounds.~~
