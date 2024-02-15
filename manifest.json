@@ -13,31 +13,9 @@
       "name": "Option",
       "key": "reboQuery",
       "description": "What would you like to do?"
-    },
-    {
-      "name": "Add Margins",
-      "key": "marginDirection",
-      "description": "Where would you like to add margins?"
-    },
-    {
-      "name": "Add Spacing",
-      "key": "spacing",
-      "description": "How much margin would you like to add?",
-      "allowFreeform": true
-    },
-    {
-      "name": "Split Center",
-      "key": "splitCenter",
-      "description": "How would you like to split your selection?"
-    },
-    {
-      "name": "Clear All Guides",
-      "key": "clear",
-      "description": "Clear all guides from frame",
-      "optional": true
     }
   ],
   "relaunchButtons": [
-    {"command": "clear-all", "name": "Clear all guides"}
+    {"command": "Relaunch", "name": "ReBo"}
   ]
 }

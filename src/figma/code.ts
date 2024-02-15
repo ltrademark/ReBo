@@ -1,154 +1,70 @@
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
-figma.parameters.on('input', ({ parameters, key, query, result }: ParameterInputEvent ) => {
-  console.log(parameters, key, query)
+figma.parameters.on('input', ({ key, result }: ParameterInputEvent ) => {
   if (figma.currentPage.selection.length === 0) {
-    result.setError('Please select one or mode nodes first')
+    result.setError('Please select one or more nodes first')
     return
   }
   switch (key) {
     case 'reboQuery':
       let menu = [
-        { name: 'Add Margins', data: 'add-margins' },
-        { name: 'Split Center', data: 'split-center' },
+        { name: 'Split Horizontally', data: 'split-center--h' },
+        { name: 'Split Vertically', data: 'split-center--v' },
         { name: 'Clear all Guides', data: 'clear' },
       ];
       result.setSuggestions(menu);
       break;
-    case 'marginDirection':
-      let marginDir = ['Horizontally', 'Vertically'];
-      result.setSuggestions(marginDir.filter((s) => s.includes(query)));
-      break;
-    case 'splitCenter':
-      let splitDir = ['Horizontally', 'Vertically'];
-      result.setSuggestions(splitDir.filter((s) => s.includes(query)));
-      break;
     default:
-      switch (parameters.reboQuery) {
-        case 'add-margins':
-          key = 'marginDirection'
-          break;
-        case 'split-center':
-          key = 'splitCenter'
-          break;
-        default:
-          return;
-      }
       return;
   }
 });
-// Runs the first time you hit "tab"
-// figma.parameters.once('input', ({ parameters }: ParameterInputEvent) => {
-//   console.log('running from a once-instance: ', parameters)
-// })
+
 figma.on('run', ({ command, parameters }: RunEvent) => {
   if(parameters) {
     console.log("figma running: ", command, parameters)
     switch(parameters.reboQuery) {
-      case 'add-margins':
-        switch (parameters.marginDirection) {
-          case 'Horizontally':
-            if(figma.currentPage.selection.length > 0) {
-              figma.currentPage.selection.forEach((sel) => {
-                let selection = sel as FrameNode;
-                let frameWidth = selection.width;
-                let marginLeft = {
-                  axis: "X",
-                  offset: parseInt(parameters.spacing)
-                };
-                let marginRight = {
-                  axis: "X",
-                  offset: (frameWidth - parseInt(parameters.spacing))
-                };
-                let margins = [...[marginLeft], ...[marginRight]]
-                if(selection.type === "FRAME") {
-                  addGuides(selection, margins);
-                } else {
-                  makeFrames(selection);
-                  addGuides(selection.parent, margins);
-                }
-              });
+      case 'split-center--v':
+        if(figma.currentPage.selection.length > 0) {
+          figma.currentPage.selection.forEach((sel) => {
+            let selection = sel as FrameNode;
+            if(selection.type === "FRAME") {
+              let dimensions = {
+                width: selection.width,
+                height: selection.height
+              };
+              let guide = [{
+                axis: "X",
+                offset: dimensions.width/2
+              }];
+              addGuides(selection, guide);
             } else {
-              figma.notify('🪟 Please select a Frame');
+              makeFrames(selection);
             }
-            break;
-          case 'Vertically':
-            if(figma.currentPage.selection.length > 0) {
-              figma.currentPage.selection.forEach((sel) => {
-                let selection = sel as FrameNode;
-                let frameHeight = selection.height;
-                let marginTop = {
-                  axis: "Y",
-                  offset: parseInt(parameters.spacing)
-                };
-                let marginBottom = {
-                  axis: "Y",
-                  offset: (frameHeight - parseInt(parameters.spacing))
-                };
-                let margins = [...[marginTop], ...[marginBottom]];
-                if(selection.type === "FRAME") {
-                  addGuides(selection, margins);
-                } else {
-                  makeFrames(selection);
-                  addGuides(selection.parent, margins);
-                }
-              });
-            } else {
-              figma.notify('🪟 Please select a Frame');
-            }
-            break;
-          default:
-            return;
+          });
+        } else {
+          figma.notify('🪟 Please select a Frame');
         }
         break;
-      case 'split-center':
-        switch (parameters.splitCenter) {
-          case 'Horizontally':
-            if(figma.currentPage.selection.length > 0) {
-              figma.currentPage.selection.forEach((sel) => {
-                let selection = sel as FrameNode;
-                if(selection.type === "FRAME") {
-                  let dimensions = {
-                    width: selection.width,
-                    height: selection.height
-                  };
-                  let guide = [{
-                    axis: "Y",
-                    offset: dimensions.height/2
-                  }];
-                  addGuides(selection, guide);
-                } else {
-                  makeFrames(selection);
-                }
-              });
+      case 'split-center--h':
+        if(figma.currentPage.selection.length > 0) {
+          figma.currentPage.selection.forEach((sel) => {
+            let selection = sel as FrameNode;
+            if(selection.type === "FRAME") {
+              let dimensions = {
+                width: selection.width,
+                height: selection.height
+              };
+              let guide = [{
+                axis: "Y",
+                offset: dimensions.height/2
+              }];
+              addGuides(selection, guide);
             } else {
-              figma.notify('🪟 Please select a Frame');
+              makeFrames(selection);
             }
-            break;
-          case 'Vertically':
-            if(figma.currentPage.selection.length > 0) {
-              figma.currentPage.selection.forEach((sel) => {
-                let selection = sel as FrameNode;
-                if(selection.type === "FRAME") {
-                  let dimensions = {
-                    width: selection.width,
-                    height: selection.height
-                  };
-                  let guide = [{
-                    axis: "X",
-                    offset: dimensions.width/2
-                  }];
-                  addGuides(selection, guide);
-                } else {
-                  makeFrames(selection);
-                }
-              });
-            } else {
-              figma.notify('🪟 Please select a Frame');
-            }
-            break;
-          default:
-            return;
+          });
+        } else {
+          figma.notify('🪟 Please select a Frame');
         }
         break;
       case 'clear':
@@ -202,6 +118,7 @@ function clearAll(sel: any) {
     selFrame.guides = [];
   })
 }
+
 async function startUI() {
   figma.showUI(__html__, { 
     width: 300, 
@@ -345,4 +262,5 @@ async function startUI() {
         break;
     }
   };
+  figma.currentPage.setRelaunchData({ Relaunch: '' })
 }
