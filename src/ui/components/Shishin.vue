@@ -2,7 +2,8 @@
   <div class="gg-app">
     <div class="gg-app--tabs">
       <ul>
-        <li v-for="(view, idx) in views" :key="view" class="gg-tab" :class="{'gg-tab_active' : currentView == idx}" @click="toggleView(idx)">{{view}}</li>
+        <li v-if="idx !== views.length - 1" v-for="(view, idx) in views" :key="view" class="gg-tab" :class="{'gg-tab_active' : currentView == idx}" @click="toggleView(idx)">{{view}}</li>
+        <li class="gg-tab version-tab" :class="{'gg-tab_active' : currentView == 3}" @click="toggleView(3)" key="whats-new"><icon name="question"></icon></li>
       </ul>
     </div>
     <div class="gg-app--view">
@@ -71,6 +72,9 @@
         </ul>
         <p class="gg-app--view_saved-guideslist--isEmpty" v-if="storedData.length < 1">You haven't saved any guides... yet 😉</p>
       </div>
+      <div class="gg-app--view_whatsnew" v-if="currentView == 3">
+        <whats-new></whats-new>
+      </div>
     </div>
     <div class="gg-app--controls" v-if="currentView < 2">
       <div class="gg-app--controls_top">
@@ -122,12 +126,15 @@
 </template>
 
 <script>
+  import whatsNew from './whatsNew';
   import icon from './icons/r-icons';
+
   export default {
     data() {
       return {
+        version: '5.0',
         currentView: 0,
-        views: ['Columns', 'Rows', 'Saved Guides'],
+        views: ['Columns', 'Rows', 'Saved Guides', 'ℹ️'],
         frameWidth: null,
         frameHeight: null,
         frames: [],
@@ -152,6 +159,7 @@
       };
     },
     mounted() {
+      this.getSavedGuides()
       window.addEventListener('keydown', (event) => {
         let ctrlPressed = event.ctrlKey;
         let shiftPressed = event.shiftKey;
@@ -246,6 +254,9 @@
           case 2:
             this.getSavedGuides();
             this.currentView = 2;
+            break;
+          case 3:
+            this.currentView = 3;
             break;
           default:
             break;
@@ -515,7 +526,8 @@
       }
     },
     components: {
-      icon
+      icon,
+      whatsNew
     }
   };
 </script>
@@ -549,6 +561,7 @@
   input {
     position: relative;
     font-size: 12px;
+    color: currentColor;
     border: none;
     outline: none;
     background: none;
@@ -561,9 +574,17 @@
   .gg-app {
     position: relative;
     display: block;
+    height: 100%;
     user-select: none;
     overflow: hidden;
 
+    &:not(:has(.gg-app--controls)){
+      .gg-app--view {
+        padding: 0;
+        height: calc(100% - 36px);
+        overflow-y: auto;
+      }
+    }
     &--tabs {
       position: relative;
       width: 100%;
@@ -578,20 +599,27 @@
 
         .gg-tab {
           cursor: default;
-          display: block;
+          display: flex;
           width: 100%;
+          justify-content: center;
+          align-items: center;
           text-align: center;
           font-size: 12px;
           font-weight: 600;
           padding: 10px 5px;
+          white-space: nowrap;
           color: var(--figma-color-text);
-          opacity: .6;
           &_active {
             color: var(--accent);
-            opacity: 1;
           }
-          &:last-child {
+          & + .gg-tab {
             border-left: 1px solid var(--figma-color-border);
+          }
+          &.version-tab {
+            display: flex;
+            width: 35px;
+            gap: 2px;
+            flex-shrink: 0;
           }
         }
       }
@@ -659,6 +687,9 @@
             font-weight: 700;
           }
         }
+      }
+      &_whatsnew {
+        height: 100%;
       }
     }
     &--controls {
@@ -751,6 +782,7 @@
         border-radius: var(--br, 3px) var(--br, 3px) 0 0;
         input {
           padding: 5px 0;
+          color: currentColor;
         }
       }
       &_footer {

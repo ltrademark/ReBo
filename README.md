@@ -33,10 +33,11 @@ Easily create an manage guides you create
 - ~~test push all settings (per view) into figma UI~~
 - ~~add localStorage for users saved guides~~
 - ~~Optimize Saved data and applying saved guides.~~
-- squash bugs
+- ~~squash bugs~~
 - ~~maybe swap params for a perma re-launch button instead~~
   - ~~or just oversimplify actions/params~~
 
 ## 🪲 Active Bugs
 - ~~when adding a saved guide to a new frame, some guides are out of bounds.~~
-- selecting multiple frames and applying margins only respects one frame
+- ~~selecting multiple frames and applying margins only respects one frame~~
+- ~~local client storage for saved guides needs looking at~~
