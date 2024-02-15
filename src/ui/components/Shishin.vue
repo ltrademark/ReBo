@@ -611,7 +611,7 @@
           white-space: nowrap;
           color: var(--figma-color-text);
           &_active {
-            color: var(--accent);
+            --figma-color-text: var(--accent);
           }
           & + .gg-tab {
             border-left: 1px solid var(--figma-color-border);
