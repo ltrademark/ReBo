@@ -1,4 +1,3 @@
-/* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
 figma.parameters.on('input', ({ key, result }: ParameterInputEvent ) => {
   if (figma.currentPage.selection.length === 0) {
@@ -125,6 +124,7 @@ async function startUI() {
     themeColors: true
   });
   figma.ui.onmessage = async msg => {
+    // console.log(figma.setCurrentPageAsync(figma.currentPage))
     switch (msg.type) {
       case 'add-guides':
         if(figma.currentPage.selection.length > 0) {

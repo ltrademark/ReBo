@@ -7,6 +7,7 @@
   ],
   "main": "dist/code.js",
   "ui": "dist/ui.html",
+  "documentAccess": "dynamic-page",
   "parameterOnly": false,
   "parameters": [
     {

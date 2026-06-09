@@ -12,7 +12,7 @@
     </ul>
    </div>
    <div class="mini-modal--footer">
-    <a href="https://ltrdmrk.co" target="_blank">made with ❤ by Ltrademark</a>
+    <a href="https://ltrademark.com" target="_blank">made with ❤ by Ltrademark</a>
     <a class="btn btn-secondary" href="https://github.com/ltrademark/ReBo/issues/new/choose" target="_blank">Report a bug</a>
    </div>
   </div>
