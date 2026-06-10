@@ -121,7 +121,7 @@ function clearAll(sel: any) {
 async function startUI() {
   figma.showUI(__html__, {
     width: 300,
-    height: 313,
+    height: 360,
     themeColors: true
   });
   figma.ui.onmessage = async msg => {

@@ -35,6 +35,16 @@
             </div>
           </div>
         </div>
+        <div class="gg-row" v-if="gPosition.gridCols > 1">
+          <div class="gg-input gg-input--num">
+            <icon name="width"></icon>
+            <input type="number" min="1" max="10000" v-model.number="gPosition.colWidth" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Width" />
+          </div>
+          <div class="gg-input gg-input--num">
+            <icon name="gutter-col"></icon>
+            <input type="number" min="0" max="10000" v-model.number="gPosition.gutterCol" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Gutter" />
+          </div>
+        </div>
         <hr class="gg-divider">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
@@ -59,6 +69,16 @@
             <div class="range-track">
               <input type="range" v-model.number="gPosition.gridRows" name="gridRows" min="0" max="12" step="1">
             </div>
+          </div>
+        </div>
+        <div class="gg-row" v-if="gPosition.gridRows > 1">
+          <div class="gg-input gg-input--num">
+            <icon name="height"></icon>
+            <input type="number" min="1" max="10000" v-model.number="gPosition.rowHeight" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Height" />
+          </div>
+          <div class="gg-input gg-input--num">
+            <icon name="gutter-row"></icon>
+            <input type="number" min="0" max="10000" v-model.number="gPosition.gutterRow" @keyup.enter="inputActivity ? addGuides() : ''" placeholder="Gutter" />
           </div>
         </div>
       </div>
@@ -151,7 +171,11 @@
           marginBottom: '',
           marginTBlinked: '',
           gridCols: 0,
-          gridRows: 0
+          gridRows: 0,
+          colWidth: '',
+          gutterCol: '',
+          rowHeight: '',
+          gutterRow: ''
         },
         actionTrayOpen: false,
         pendingAddGuides: false,
@@ -333,45 +357,71 @@
       },
       columns(width) {
         let frameWidth = width;
-        if (this.gPosition.gridCols > 0) {
-          let getLeftMargin = this.colMarginsLinked ? this.gPosition.marginLRlinked ? this.gPosition.marginLRlinked : this.gPosition.marginLeft : this.gPosition.marginLeft;
-          let getWidth = !this.colMarginsLinked ? (this.gPosition.marginRight ? (frameWidth - this.gPosition.marginRight) : frameWidth) - (getLeftMargin ? getLeftMargin : 0) : (frameWidth - this.gPosition.marginLRlinked) - getLeftMargin;
-          let getColumn = getWidth / this.gPosition.gridCols;
-          let indColumns = [];
+        const numCols = this.gPosition.gridCols;
+        if (numCols <= 0) return;
+        let getLeftMargin = this.colMarginsLinked ? this.gPosition.marginLRlinked ? this.gPosition.marginLRlinked : this.gPosition.marginLeft : this.gPosition.marginLeft;
+        let getWidth = !this.colMarginsLinked ? (this.gPosition.marginRight ? (frameWidth - this.gPosition.marginRight) : frameWidth) - (getLeftMargin ? getLeftMargin : 0) : (frameWidth - this.gPosition.marginLRlinked) - getLeftMargin;
 
-          for (let i = 1; i < this.gPosition.gridCols; i++) {
-            let smartOffset = getLeftMargin ? Math.round(getColumn * i + getLeftMargin) : Math.round(getColumn * i);
-            let colPos = {
-              axis: "X",
-              offset: smartOffset
-            };
-            indColumns.push(colPos)
+        const cw = this.gPosition.colWidth;
+        const gw = this.gPosition.gutterCol;
+
+        if ((cw || gw) && numCols > 1) {
+          const colW = cw || ((getWidth - (numCols - 1) * gw) / numCols);
+          const gutW = gw || 0;
+          const totalGridWidth = numCols * colW + (numCols - 1) * gutW;
+          const centerX = (getLeftMargin || 0) + getWidth / 2;
+          const startX = centerX - totalGridWidth / 2;
+          const guides = [];
+          for (let i = 0; i < numCols; i++) {
+            const colStart = startX + i * (colW + gutW);
+            const colEnd = colStart + colW;
+            if (i > 0) guides.push({ axis: "X", offset: Math.round(colStart) });
+            if (i < numCols - 1) guides.push({ axis: "X", offset: Math.round(colEnd) });
           }
-          return indColumns
-        } else {
-          //ignore
+          return guides;
         }
+
+        let getColumn = getWidth / numCols;
+        let indColumns = [];
+        for (let i = 1; i < numCols; i++) {
+          let smartOffset = getLeftMargin ? Math.round(getColumn * i + getLeftMargin) : Math.round(getColumn * i);
+          indColumns.push({ axis: "X", offset: smartOffset });
+        }
+        return indColumns;
       },
       rows(height) {
         let frameHeight = height;
-        if (this.gPosition.gridRows > 0) {
-          let getTopMargin = this.rowMarginsLinked ? this.gPosition.marginTBlinked ? this.gPosition.marginTBlinked : this.gPosition.marginTop : this.gPosition.marginTop;
-          let getHeight = !this.rowMarginsLinked ? (this.gPosition.marginBottom ? (frameHeight - this.gPosition.marginBottom) : frameHeight) - (getTopMargin ? getTopMargin : 0) : (frameHeight - this.gPosition.marginTBlinked) - getTopMargin;
-          let getRow = getHeight / this.gPosition.gridRows;
-          let indRows = [];
+        const numRows = this.gPosition.gridRows;
+        if (numRows <= 0) return;
+        let getTopMargin = this.rowMarginsLinked ? this.gPosition.marginTBlinked ? this.gPosition.marginTBlinked : this.gPosition.marginTop : this.gPosition.marginTop;
+        let getHeight = !this.rowMarginsLinked ? (this.gPosition.marginBottom ? (frameHeight - this.gPosition.marginBottom) : frameHeight) - (getTopMargin ? getTopMargin : 0) : (frameHeight - this.gPosition.marginTBlinked) - getTopMargin;
 
-          for (let i = 1; i < this.gPosition.gridRows; i++) {
-            let smartOffset = getTopMargin ? Math.round(getRow * i + getTopMargin) : Math.round(getRow * i);
-            let rowPos = {
-              axis: "Y",
-              offset: smartOffset
-            };
-            indRows.push(rowPos)
+        const rh = this.gPosition.rowHeight;
+        const gr = this.gPosition.gutterRow;
+
+        if ((rh || gr) && numRows > 1) {
+          const rowH = rh || ((getHeight - (numRows - 1) * gr) / numRows);
+          const gutH = gr || 0;
+          const totalGridHeight = numRows * rowH + (numRows - 1) * gutH;
+          const centerY = (getTopMargin || 0) + getHeight / 2;
+          const startY = centerY - totalGridHeight / 2;
+          const guides = [];
+          for (let i = 0; i < numRows; i++) {
+            const rowStart = startY + i * (rowH + gutH);
+            const rowEnd = rowStart + rowH;
+            if (i > 0) guides.push({ axis: "Y", offset: Math.round(rowStart) });
+            if (i < numRows - 1) guides.push({ axis: "Y", offset: Math.round(rowEnd) });
           }
-          return indRows
-        } else {
-          //ignore
+          return guides;
         }
+
+        let getRow = getHeight / numRows;
+        let indRows = [];
+        for (let i = 1; i < numRows; i++) {
+          let smartOffset = getTopMargin ? Math.round(getRow * i + getTopMargin) : Math.round(getRow * i);
+          indRows.push({ axis: "Y", offset: smartOffset });
+        }
+        return indRows;
       },
       addSavedGuide(dataID){
         let guide = this.storedData[dataID];
@@ -454,7 +504,11 @@
           marginBottom: '',
           marginTBlinked: '',
           gridCols: 0,
-          gridRows: 0
+          gridRows: 0,
+          colWidth: '',
+          gutterCol: '',
+          rowHeight: '',
+          gutterRow: ''
         };
         this.actionTrayOpen = false;
         this.gPosition = blanks;
