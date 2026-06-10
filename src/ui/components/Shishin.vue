@@ -375,8 +375,8 @@
           for (let i = 0; i < numCols; i++) {
             const colStart = startX + i * (colW + gutW);
             const colEnd = colStart + colW;
-            if (i > 0) guides.push({ axis: "X", offset: Math.round(colStart) });
-            if (i < numCols - 1) guides.push({ axis: "X", offset: Math.round(colEnd) });
+            guides.push({ axis: "X", offset: Math.round(colStart) });
+            guides.push({ axis: "X", offset: Math.round(colEnd) });
           }
           return guides;
         }
@@ -409,8 +409,8 @@
           for (let i = 0; i < numRows; i++) {
             const rowStart = startY + i * (rowH + gutH);
             const rowEnd = rowStart + rowH;
-            if (i > 0) guides.push({ axis: "Y", offset: Math.round(rowStart) });
-            if (i < numRows - 1) guides.push({ axis: "Y", offset: Math.round(rowEnd) });
+            guides.push({ axis: "Y", offset: Math.round(rowStart) });
+            guides.push({ axis: "Y", offset: Math.round(rowEnd) });
           }
           return guides;
         }
@@ -583,7 +583,9 @@
 
   .gg-app {
     position: relative;
-    display: block;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
     height: 100%;
     user-select: none;
     overflow: hidden;
@@ -638,6 +640,7 @@
     &--view {
       position: relative;
       padding: 10px;
+      overflow-y: auto;
       &_saved {
         height: 100%;
         overflow-y: auto;
