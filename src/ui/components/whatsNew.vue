@@ -23,12 +23,17 @@
    return {
     currentVer: this.$parent.version,
     changelog: [
-     'New: This section is pretty new, and it came with this update.',
-     'New: Dark mode support is now here',
-     'New: Added parameter actions. Now you can Tab into a few quick actions without opening up the plugin UI.',
-     'New: Added Re-Launch shortcut to the Page node.',
-     'Bug: Apply guide actions to multiple frames in selection.',
-     'Update: Using client storage for saving guides.'
+     'New: Columns and Rows merged into a single Guides tab.',
+     'New: Column Width and Gutter inputs — set a fixed column width and gutter; the grid centers itself in the available space.',
+     'New: Row Height and Gutter inputs — same centered calculation for horizontal grids.',
+     'New: Plugin window auto-resizes when the Width/Gutter rows appear or disappear.',
+     'New: Get from Selection — capture the exact guides on any frame and save them as Fixed Guides (❖) for re-use.',
+     'New: Fixed Guides are applied exactly as saved, bypassing any column/row calculations.',
+     'Bug: Single-frame right and bottom margins were using stale dimensions from a previous selection.',
+     'Bug: Guides could not be saved or deleted due to a Vue 3 reactive Proxy serialization error.',
+     'Bug: Column grid outer edges (left of first column, right of last column) were missing, making margins appear as extra columns.',
+     'Update: Upgraded to Vue 3.',
+     'Update: Replaced Webpack with Vite — build time dropped from ~45s to ~6s.',
     ]
    }
   }

@@ -155,7 +155,7 @@
   export default {
     data() {
       return {
-        version: '5.0',
+        version: '6.0',
         currentView: 0,
         views: ['Guides', 'Saved', 'ℹ️'],
         frameWidth: null,
