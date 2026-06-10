@@ -157,7 +157,7 @@
       return {
         version: '5.0',
         currentView: 0,
-        views: ['Guides', 'Saved Guides', 'ℹ️'],
+        views: ['Guides', 'Saved', 'ℹ️'],
         frameWidth: null,
         frameHeight: null,
         frames: [],
@@ -240,7 +240,17 @@
         return this.gPosition.gridRows > 0 ? this.gPosition.gridRows : 'No'
       }
     },
+    watch: {
+      'gPosition.gridCols'() { this.updateUIHeight(); },
+      'gPosition.gridRows'() { this.updateUIHeight(); },
+    },
     methods: {
+      updateUIHeight() {
+        let height = 313;
+        if (this.gPosition.gridCols > 1) height += 40;
+        if (this.gPosition.gridRows > 1) height += 40;
+        parent.postMessage({ pluginMessage: { type: 'resize', height } }, '*');
+      },
       getFrameDimensions() {
         parent.postMessage({ pluginMessage: { type: "request-dimensions" } }, "*");
       },

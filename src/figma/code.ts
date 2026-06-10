@@ -121,7 +121,7 @@ function clearAll(sel: any) {
 async function startUI() {
   figma.showUI(__html__, {
     width: 300,
-    height: 360,
+    height: 313,
     themeColors: true
   });
   figma.ui.onmessage = async msg => {
@@ -285,6 +285,9 @@ async function startUI() {
         } else {
           figma.notify('🪟 Please select a Frame');
         }
+        break;
+      case 'resize':
+        figma.ui.resize(300, msg.height);
         break;
       case 'cancel':
         figma.closePlugin();
