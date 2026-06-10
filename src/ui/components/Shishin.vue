@@ -376,7 +376,7 @@
       addSavedGuide(dataID){
         let guide = this.storedData[dataID];
         if (guide.type === 'raw') {
-          parent.postMessage({ pluginMessage: { type: "apply-raw-guides", guides: guide.guides } }, "*");
+          parent.postMessage({ pluginMessage: { type: "apply-raw-guides", guides: guide.guides.map(g => ({ axis: g.axis, offset: g.offset })) } }, "*");
           return;
         }
         this.gPosition = guide.data;
