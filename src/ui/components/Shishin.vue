@@ -397,7 +397,7 @@
           savedData = {
             name: this.saveName,
             type: 'raw',
-            guides: this.rawGuidesFromSelection
+            guides: this.rawGuidesFromSelection.map(g => ({ axis: g.axis, offset: g.offset }))
           };
         } else if (this.inputActivity) {
           savedData = {
