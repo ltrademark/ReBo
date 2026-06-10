@@ -84,7 +84,7 @@ module.exports = (env, argv) => ({
   },
   resolve: {
     alias: {
-      vue$: "vue/dist/vue.esm.js"
+      vue$: "vue/dist/vue.esm-bundler.js"
     },
     extensions: ["*", ".tsx", ".ts", ".jsx", ".js", ".vue", ".json"]
   },

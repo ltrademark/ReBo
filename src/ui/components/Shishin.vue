@@ -2,7 +2,9 @@
   <div class="gg-app">
     <div class="gg-app--tabs">
       <ul>
-        <li v-if="idx !== views.length - 1" v-for="(view, idx) in views" :key="view" class="gg-tab" :class="{'gg-tab_active' : currentView == idx}" @click="toggleView(idx)">{{view}}</li>
+        <template v-for="(view, idx) in views" :key="view">
+          <li v-if="idx !== views.length - 1" class="gg-tab" :class="{'gg-tab_active' : currentView == idx}" @click="toggleView(idx)">{{view}}</li>
+        </template>
         <li class="gg-tab version-tab" :class="{'gg-tab_active' : currentView == 3}" @click="toggleView(3)" key="whats-new"><icon name="question"></icon></li>
       </ul>
     </div>
@@ -205,30 +207,6 @@
       },
       gridRowsCount() {
         return this.gPosition.gridRows > 0 ? this.gPosition.gridRows : 'No'
-      }
-    },
-    filters: {
-      sanitize(string) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#x27;',
-            "/": '&#x2F;',
-        };
-        const reg = /[&<>"'/]/ig;
-        return string.replace(reg, (match)=>(map[match]));
-      },
-      truncate(value, size) {
-        if (!value) return '';
-        value = value.toString();
-
-        if (value.length <= size) {
-          return value;
-        } else {
-          return value.substr(0, size) + '...';
-        }
       }
     },
     methods: {

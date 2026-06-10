@@ -1,4 +1,5 @@
 /* eslint-disable */
+/// <reference types="@figma/plugin-typings" />
 figma.parameters.on('input', ({ key, result }: ParameterInputEvent ) => {
   if (figma.currentPage.selection.length === 0) {
     result.setError('Please select one or more nodes first')
