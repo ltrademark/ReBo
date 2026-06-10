@@ -10,6 +10,7 @@
     <ul>
      <li v-for="change in changelog" :key="change">{{ change }}</li>
     </ul>
+    <button class="button button--secondary restore-btn" @click="restorePresets">Restore Default Presets</button>
    </div>
    <div class="mini-modal--footer">
     <a href="https://ltrademark.com" target="_blank">made with ❤ by Ltrademark</a>
@@ -19,6 +20,11 @@
 </template>
 <script>
  export default {
+  methods: {
+   restorePresets() {
+    parent.postMessage({ pluginMessage: { type: 'restore-presets' } }, '*');
+   }
+  },
   data() {
    return {
     currentVer: this.$parent.version,

@@ -1,5 +1,41 @@
 /* eslint-disable */
 /// <reference types="@figma/plugin-typings" />
+
+const DEFAULT_PRESETS = [
+  {
+    name: 'Simple Outline',
+    preset: true,
+    view: 0,
+    data: {
+      marginLeft: 0, marginRight: 0, marginLRlinked: 0,
+      marginTop: 0, marginBottom: 0, marginTBlinked: 0,
+      gridCols: 0, gridRows: 0,
+      colWidth: '', gutterCol: '', rowHeight: '', gutterRow: ''
+    }
+  },
+  {
+    name: '12-Column Grid',
+    preset: true,
+    view: 0,
+    data: {
+      marginLeft: 80, marginRight: 80, marginLRlinked: 80,
+      marginTop: '', marginBottom: '', marginTBlinked: '',
+      gridCols: 12, gridRows: 0,
+      colWidth: '', gutterCol: 24, rowHeight: '', gutterRow: ''
+    }
+  },
+  {
+    name: 'Standard Magazine Page',
+    preset: true,
+    view: 0,
+    data: {
+      marginLeft: 48, marginRight: 48, marginLRlinked: 48,
+      marginTop: 64, marginBottom: 64, marginTBlinked: 64,
+      gridCols: 4, gridRows: 0,
+      colWidth: '', gutterCol: 16, rowHeight: '', gutterRow: ''
+    }
+  }
+];
 figma.parameters.on('input', ({ key, result }: ParameterInputEvent ) => {
   if (figma.currentPage.selection.length === 0) {
     result.setError('Please select one or more nodes first')
@@ -222,10 +258,19 @@ async function startUI() {
         figma.notify(`${msg.savename} was Saved ✨`);
         break;
       case 'get-saved-guides':
-        const getGuides = await figma.clientStorage.getAsync("storedData");
-        if (getGuides) {
-          figma.ui.postMessage({"storedData" : getGuides});
+        let storedGuides = await figma.clientStorage.getAsync("storedData");
+        if (!storedGuides || storedGuides.length === 0) {
+          storedGuides = DEFAULT_PRESETS;
+          await figma.clientStorage.setAsync("storedData", storedGuides);
         }
+        figma.ui.postMessage({ storedData: storedGuides });
+        break;
+      case 'restore-presets':
+        const existing = await figma.clientStorage.getAsync("storedData") || [];
+        const restored = [...DEFAULT_PRESETS, ...existing];
+        await figma.clientStorage.setAsync("storedData", restored);
+        figma.ui.postMessage({ storedData: restored });
+        figma.notify('Default presets restored ✨');
         break;
       case 'update-saved-guides':
         const setSavedData = await figma.clientStorage.setAsync("storedData", msg.savedGuides);

@@ -86,6 +86,7 @@
         <ul class="gg-app--view_saved-guideslist" :class="{'open' : actionTrayOpen}" v-if="storedData.length > 0">
           <li v-for="(guide, idx) in storedData" class="button button--secondary" :key="idx">
             <span v-if="guide.type === 'raw'" class="guide-type-icon" title="Fixed Guides">❖</span>
+            <span v-if="guide.preset" class="preset-chip">PRESET</span>
             <p @click.stop="addSavedGuide(idx)">{{guide.name}}</p>
             <b class="icon-button" @click="removeItem(idx)" :title="`Delete ${guide.name}`">
               <icon name="trash"></icon>
@@ -302,7 +303,7 @@
       marginsX(width) {
         let frameWidth = width;
         if (this.colMarginsLinked) {
-          if (this.gPosition.marginLRlinked) {
+          if (this.gPosition.marginLRlinked !== '') {
             let marginLeft = {
               axis: "X",
               offset: this.gPosition.marginLRlinked
@@ -315,14 +316,14 @@
           }
         } else {
           let margins = []
-          if (this.gPosition.marginLeft) {
+          if (this.gPosition.marginLeft !== '') {
             let marginLeft = {
               axis: "X",
               offset: this.gPosition.marginLeft
             };
             margins.push(marginLeft)
           }
-          if (this.gPosition.marginRight) {
+          if (this.gPosition.marginRight !== '') {
             let marginRight = {
               axis: "X",
               offset: frameWidth - this.gPosition.marginRight
@@ -335,7 +336,7 @@
       marginsY(height) {
         let frameHeight = height;
         if (this.rowMarginsLinked) {
-          if (this.gPosition.marginTBlinked) {
+          if (this.gPosition.marginTBlinked !== '') {
             let marginTop = {
               axis: "Y",
               offset: this.gPosition.marginTBlinked
@@ -348,14 +349,14 @@
           }
         } else {
           let margins = [];
-          if (this.gPosition.marginTop) {
+          if (this.gPosition.marginTop !== '') {
             let marginTop = {
               axis: "Y",
               offset: this.gPosition.marginTop
             };
             margins.push(marginTop)
           }
-          if (this.gPosition.marginBottom) {
+          if (this.gPosition.marginBottom !== '') {
             let marginBottom = {
               axis: "Y",
               offset: frameHeight - this.gPosition.marginBottom
@@ -651,10 +652,17 @@
       position: relative;
       padding: 10px;
       overflow-y: auto;
+
+      &:has(.gg-app--view_saved) {
+        padding: 0;
+        overflow: hidden;
+      }
+      
       &_saved {
         height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
+        padding: 10px;
         @include custom-scrollbar($c: var(--figma-color-border));
         &-guideslist {
           margin: 0;
@@ -676,6 +684,23 @@
               opacity: 0.5;
               margin-right: 4px;
               cursor: default;
+            }
+            .preset-chip {
+              position: absolute;
+              top: 50%;
+              left: 5px;
+              translate: 0 -50%;
+              flex-shrink: 0;
+              font-size: 8px;
+              font-weight: 700;
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+              padding: 1px 4px;
+              border-radius: 2px;
+              background-color: var(--figma-color-bg-brand-tertiary, rgba(24, 160, 251, 0.15));
+              color: var(--figma-color-text-brand, #18a0fb);
+              cursor: default;
+              line-height: 1.5;
             }
             p {
               position: relative;
