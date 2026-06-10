@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"vite build --watch\" \"esbuild src/figma/code.ts --bundle --outfile=dist/code.js --sourcemap=inline --watch\"",
+    "dev": "node scripts/dev.js",
     "build": "rm -rf dist && vite build && esbuild src/figma/code.ts --bundle --outfile=dist/code.js --minify"
   },
   "dependencies": {
@@ -24,7 +24,6 @@
     "@typescript-eslint/parser": "^7.1.0",
     "@vitejs/plugin-vue": "^5.0.0",
     "@vue/compiler-sfc": "^3.4.0",
-    "concurrently": "^8.2.0",
     "esbuild": "^0.20.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.22.0",
