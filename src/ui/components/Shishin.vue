@@ -153,6 +153,7 @@
           gridRows: 0
         },
         actionTrayOpen: false,
+        pendingAddGuides: false,
         storedData: [],
         tempData: [],
         saveName: '',
@@ -168,6 +169,10 @@
           this.frames = data.frames;
           this.frameWidth = data.frames[0].width;
           this.frameHeight = data.frames[0].height;
+          if (this.pendingAddGuides) {
+            this.pendingAddGuides = false;
+            this.computeAndSendGuides();
+          }
         }
         if (data.storedData !== undefined) {
           this.storedData = data.storedData;
@@ -237,26 +242,27 @@
         parent.postMessage({ pluginMessage: { type: 'split' , dirType} }, '*');
       },
       addGuides() {
+        if (!this.inputActivity) return;
+        this.pendingAddGuides = true;
         this.getFrameDimensions();
+      },
+      computeAndSendGuides() {
+        if (this.currentView !== 0 || !this.inputActivity) return;
         let allData = [];
-        setTimeout(()=>{
-          if(this.currentView == 0 && this.inputActivity) {
-            this.frames.forEach(e => {
-              let frameGuides = [];
-              const xMargins = this.marginsX(e.width);
-              const yMargins = this.marginsY(e.height);
-              const cols = this.columns(e.width);
-              const rows = this.rows(e.height);
-              if (xMargins) frameGuides = frameGuides.concat(xMargins);
-              if (yMargins) frameGuides = frameGuides.concat(yMargins);
-              if (cols) frameGuides = frameGuides.concat(cols);
-              if (rows) frameGuides = frameGuides.concat(rows);
-              allData.push(frameGuides);
-            });
-            this.tempData = allData;
-            parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
-          }
-        }, 10);
+        this.frames.forEach(e => {
+          let frameGuides = [];
+          const xMargins = this.marginsX(e.width);
+          const yMargins = this.marginsY(e.height);
+          const cols = this.columns(e.width);
+          const rows = this.rows(e.height);
+          if (xMargins) frameGuides = frameGuides.concat(xMargins);
+          if (yMargins) frameGuides = frameGuides.concat(yMargins);
+          if (cols) frameGuides = frameGuides.concat(cols);
+          if (rows) frameGuides = frameGuides.concat(rows);
+          allData.push(frameGuides);
+        });
+        this.tempData = allData;
+        parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
       },
       marginsX(width) {
         let frameWidth = width;
