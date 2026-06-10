@@ -382,7 +382,7 @@
       },
       removeItem(dataID){
         this.storedData.splice(dataID, 1);
-        parent.postMessage({ pluginMessage: { type: "update-saved-guides", savedGuides : this.storedData } }, "*");
+        parent.postMessage({ pluginMessage: { type: "update-saved-guides", savedGuides: JSON.parse(JSON.stringify(this.storedData)) } }, "*");
         this.getSavedGuides();
       },
       saveGuides(){
@@ -391,7 +391,7 @@
           let savedData = {
             name: this.saveName,
             view: this.currentView,
-            data: this.gPosition
+            data: { ...this.gPosition }
           };
           parent.postMessage({ pluginMessage: { type: "save-guides", savename: this.saveName, savedata: savedData} }, "*");
           this.saving = false;
