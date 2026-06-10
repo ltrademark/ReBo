@@ -1,7 +1,9 @@
 <template>
-  <div class="r-icon" :class="addClasses" v-html="require(`./parts/${this.fixedName}.svg`).default"></div>
+  <div class="r-icon" :class="addClasses" v-html="svgContent"></div>
 </template>
 <script>
+  const svgs = import.meta.glob('./parts/*.svg', { eager: true, query: '?raw', import: 'default' })
+
   export default {
     props: {
       name: {
@@ -14,6 +16,9 @@
     computed: {
       fixedName() {
         return this.name.toLowerCase();
+      },
+      svgContent() {
+        return svgs[`./parts/${this.fixedName}.svg`] || ''
       }
     }
   }
