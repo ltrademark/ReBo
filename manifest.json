@@ -8,6 +8,9 @@
   "main": "dist/code.js",
   "ui": "dist/ui.html",
   "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
   "parameterOnly": false,
   "parameters": [
     {
