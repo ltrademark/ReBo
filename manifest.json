@@ -6,7 +6,7 @@
     "figma"
   ],
   "main": "dist/code.js",
-  "ui": "dist/ui.html",
+  "ui": "http://localhost:5173/ui.html",
   "documentAccess": "dynamic-page",
   "parameterOnly": false,
   "parameters": [

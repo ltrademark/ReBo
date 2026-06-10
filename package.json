@@ -6,8 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "node scripts/dev.js",
-    "build": "rm -rf dist && vite build && esbuild src/figma/code.ts --bundle --outfile=dist/code.js --minify"
+    "dev": "vite",
+    "build": "rm -rf dist && vite build"
   },
   "dependencies": {
     "vue": "^3.4.0"

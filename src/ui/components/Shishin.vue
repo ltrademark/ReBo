@@ -157,7 +157,7 @@
       return {
         version: '6.0',
         currentView: 0,
-        views: ['Guides', 'Saved', 'ℹ️'],
+        views: ['Form', 'Saved', 'ℹ️'],
         frameWidth: null,
         frameHeight: null,
         frames: [],
