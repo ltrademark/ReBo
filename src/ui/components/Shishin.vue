@@ -679,10 +679,13 @@
               }
             }
             .guide-type-icon {
+              position: absolute;
+              top: 50%;
+              left: 5px;
+              translate: 0 -50%;
               flex-shrink: 0;
               font-size: 9px;
               opacity: 0.5;
-              margin-right: 4px;
               cursor: default;
             }
             .preset-chip {

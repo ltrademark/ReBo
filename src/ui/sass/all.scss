@@ -69,7 +69,7 @@ code {
 .btn {
   $iconsize: 2;
   --btn-fg: var(--figma-color-text);
-  --btn-bg: var(--figma-color-bg);
+  --btn-bg: color-mix(in srgb, var(--figma-color-bg), var(--btn-fg) 5%);
 
   @include buttonDefault();
   color: var(--btn-fg);
@@ -92,7 +92,7 @@ code {
   }
   &-secondary,
   &--secondary {
-    border: 1px solid currentColor !important;
+    border: 1px solid color-mix(in srgb, currentColor, transparent 85%) !important;
     &:focus,
     &:hover {
       --btn-bg: var(--figma-color-bg-secondary);
