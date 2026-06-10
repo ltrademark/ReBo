@@ -48,12 +48,17 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       port: 5173,
+      strictPort: true,
+      watch: {
+        usePolling: true,
+      },
     },
     build: {
       outDir: 'dist',
       emptyOutDir: false,
       cssCodeSplit: false,
       sourcemap: mode === 'development' ? 'inline' : false,
+      watch: command === 'build' ? { include: ['src/ui/**', 'src/figma-ds/**', '*.vue'] } : null,
       rollupOptions: {
         input: 'ui.html',
       },

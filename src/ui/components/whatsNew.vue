@@ -4,7 +4,7 @@
     <div class="brand-group">
      <img src="https://static.basedcdn.com/madebyLTM/src/assets/rebo-icon.png" alt="logo" />
      <h3>ReBo</h3>
-     <sup>Copyright &copy; 2024. Ltrademark&trade; All Rights Reserved</sup>
+     <sup>Copyright &copy; 2026. Ltrademark&trade; All Rights Reserved</sup>
     </div>
     <h4>✨ Changes in v{{currentVer}}</h4>
     <ul>

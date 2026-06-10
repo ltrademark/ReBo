@@ -157,7 +157,7 @@
       return {
         version: '6.0',
         currentView: 0,
-        views: ['Form', 'Saved', 'ℹ️'],
+        views: ['Guide Config', 'Saved', 'ℹ️'],
         frameWidth: null,
         frameHeight: null,
         frames: [],
@@ -601,8 +601,8 @@
     overflow: hidden;
 
     &:not(:has(.gg-app--controls)){
+      grid-template-rows: auto 1fr;
       .gg-app--view {
-        height: calc(100% - 36px);
         &:has(.gg-app--view_whatsnew) {
           padding: 0;
         }
