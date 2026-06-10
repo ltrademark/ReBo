@@ -65,6 +65,7 @@
       <div class="gg-app--view_saved" v-if="currentView == 1">
         <ul class="gg-app--view_saved-guideslist" :class="{'open' : actionTrayOpen}" v-if="storedData.length > 0">
           <li v-for="(guide, idx) in storedData" class="button button--secondary" :key="idx">
+            <span v-if="guide.type === 'raw'" class="guide-type-icon" title="Fixed Guides">❖</span>
             <p @click.stop="addSavedGuide(idx)">{{guide.name}}</p>
             <b class="icon-button" @click="removeItem(idx)" :title="`Delete ${guide.name}`">
               <icon name="trash"></icon>
@@ -109,7 +110,7 @@
         <ul class="gg-app--actions" :class="{'open' : actionTrayOpen}">
           <li class="button button--secondary" @click="getGuidesFromSelection()">Get from Selection</li>
           <li class="button" @click="resetFields()" :class="inputActivity ? 'button--secondary' : 'button--disabled'">Reset Fields</li>
-          <li class="button" @click="saving=true" :class="inputActivity ? 'button--secondary' : 'button--disabled'">Save Current Guides</li>
+          <li class="button" @click="openSaveModal()" :class="inputActivity ? 'button--secondary' : 'button--disabled'">Save Current Guides</li>
         </ul>
       </div>
     </div>
@@ -120,7 +121,7 @@
         </div>
         <div class="gg-app--modal_footer">
           <div class="button" @click="saveGuides()" :class="saveName ? 'button--primary' : 'button--disabled'">Save</div>
-          <div class="button button--secondary" @click="saving=false">Cancel</div>
+          <div class="button button--secondary" @click="cancelSave()">Cancel</div>
         </div>
       </div>
     </transition>
@@ -154,6 +155,7 @@
         },
         actionTrayOpen: false,
         pendingAddGuides: false,
+        rawGuidesFromSelection: null,
         storedData: [],
         tempData: [],
         saveName: '',
@@ -177,11 +179,10 @@
         if (data.storedData !== undefined) {
           this.storedData = data.storedData;
         }
-        if (data.guidesFromSelection !== undefined) {
-          this.gPosition = data.guidesFromSelection;
-          this.colMarginsLinked = data.guidesFromSelection.marginLRlinked !== '';
-          this.rowMarginsLinked = data.guidesFromSelection.marginTBlinked !== '';
+        if (data.rawGuidesFromSelection !== undefined) {
+          this.rawGuidesFromSelection = data.rawGuidesFromSelection;
           this.actionTrayOpen = false;
+          this.saving = true;
         }
       };
       this.getSavedGuides();
@@ -374,6 +375,10 @@
       },
       addSavedGuide(dataID){
         let guide = this.storedData[dataID];
+        if (guide.type === 'raw') {
+          parent.postMessage({ pluginMessage: { type: "apply-raw-guides", guides: guide.guides } }, "*");
+          return;
+        }
         this.gPosition = guide.data;
         this.currentView = 0;
         this.addGuides();
@@ -386,21 +391,36 @@
         this.getSavedGuides();
       },
       saveGuides(){
-        this.actionTrayOpen = false;
-        if(this.inputActivity) {
-          let savedData = {
+        if (!this.saveName) return;
+        let savedData;
+        if (this.rawGuidesFromSelection) {
+          savedData = {
+            name: this.saveName,
+            type: 'raw',
+            guides: this.rawGuidesFromSelection
+          };
+        } else if (this.inputActivity) {
+          savedData = {
             name: this.saveName,
             view: this.currentView,
             data: { ...this.gPosition }
           };
-          parent.postMessage({ pluginMessage: { type: "save-guides", savename: this.saveName, savedata: savedData} }, "*");
-          this.saving = false;
-          this.saveName = '';
-          this.saved = true;
-          setTimeout(()=>{
-            this.saved = false;
-          }, 3000);
+        } else {
+          return;
         }
+        parent.postMessage({ pluginMessage: { type: "save-guides", savename: this.saveName, savedata: savedData } }, "*");
+        this.rawGuidesFromSelection = null;
+        this.saving = false;
+        this.saveName = '';
+      },
+      openSaveModal() {
+        this.rawGuidesFromSelection = null;
+        this.saving = true;
+      },
+      cancelSave() {
+        this.saving = false;
+        this.rawGuidesFromSelection = null;
+        this.saveName = '';
       },
       saveGuidesOLD() {
         this.actionTrayOpen = false;
@@ -583,9 +603,17 @@
                 opacity: 1;
               }
             }
+            .guide-type-icon {
+              flex-shrink: 0;
+              font-size: 9px;
+              opacity: 0.5;
+              margin-right: 4px;
+              cursor: default;
+            }
             p {
               position: relative;
-              width: 100%;
+              flex: 1;
+              min-width: 0;
               text-overflow: ellipsis;
               white-space: nowrap;
               overflow: hidden;

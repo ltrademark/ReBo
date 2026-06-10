@@ -265,51 +265,23 @@ async function startUI() {
               figma.notify('No guides found on this frame');
               break;
             }
-            const fw = sel.width;
-            const fh = sel.height;
-            const xOffsets = sel.guides.filter(g => g.axis === "X").map(g => g.offset).sort((a, b) => a - b);
-            const yOffsets = sel.guides.filter(g => g.axis === "Y").map(g => g.offset).sort((a, b) => a - b);
-
-            let result: {[key: string]: number | string} = {
-              marginLeft: '', marginRight: '', marginLRlinked: '',
-              marginTop: '', marginBottom: '', marginTBlinked: '',
-              gridCols: 0, gridRows: 0
-            };
-
-            if(xOffsets.length >= 2) {
-              const left = xOffsets[0];
-              const right = fw - xOffsets[xOffsets.length - 1];
-              const interiorCols = xOffsets.length - 2;
-              if(Math.round(left) === Math.round(right)) {
-                result.marginLRlinked = Math.round(left);
-              } else {
-                result.marginLeft = Math.round(left);
-                result.marginRight = Math.round(right);
-              }
-              result.gridCols = interiorCols > 0 ? interiorCols + 1 : 0;
-            } else if(xOffsets.length === 1) {
-              result.marginLeft = Math.round(xOffsets[0]);
-            }
-
-            if(yOffsets.length >= 2) {
-              const top = yOffsets[0];
-              const bottom = fh - yOffsets[yOffsets.length - 1];
-              const interiorRows = yOffsets.length - 2;
-              if(Math.round(top) === Math.round(bottom)) {
-                result.marginTBlinked = Math.round(top);
-              } else {
-                result.marginTop = Math.round(top);
-                result.marginBottom = Math.round(bottom);
-              }
-              result.gridRows = interiorRows > 0 ? interiorRows + 1 : 0;
-            } else if(yOffsets.length === 1) {
-              result.marginTop = Math.round(yOffsets[0]);
-            }
-
-            figma.ui.postMessage({ guidesFromSelection: result });
+            const rawGuides = sel.guides.map(g => ({ axis: g.axis, offset: g.offset }));
+            figma.ui.postMessage({ rawGuidesFromSelection: rawGuides });
           } else {
             figma.notify('🪟 Please select a Frame');
           }
+        } else {
+          figma.notify('🪟 Please select a Frame');
+        }
+        break;
+      case 'apply-raw-guides':
+        if(figma.currentPage.selection.length > 0) {
+          figma.currentPage.selection.forEach((sel) => {
+            let selection = sel as FrameNode;
+            if(selection.type === "FRAME") {
+              addGuides(selection, msg.guides);
+            }
+          });
         } else {
           figma.notify('🪟 Please select a Frame');
         }
