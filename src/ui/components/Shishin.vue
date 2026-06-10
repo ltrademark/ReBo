@@ -103,10 +103,11 @@
       </div>
       <div class="gg-app--controls_bottom">
         <button class="button" @click="inputActivity ? addGuides() : ''" :class="inputActivity ? 'button--primary' : 'button--secondary button--disabled'">Add Guides</button>
-        <div class="additional-controls button button--secondary" @click="actionTrayOpen=!actionTrayOpen" v-if="inputActivity">
+        <div class="additional-controls button button--secondary" @click="actionTrayOpen=!actionTrayOpen">
           <icon name="caret" :style="actionTrayOpen ? 'transform: rotate(180deg)' : ''"></icon>
         </div>
         <ul class="gg-app--actions" :class="{'open' : actionTrayOpen}">
+          <li class="button button--secondary" @click="getGuidesFromSelection()">Get from Selection</li>
           <li class="button" @click="resetFields()" :class="inputActivity ? 'button--secondary' : 'button--disabled'">Reset Fields</li>
           <li class="button" @click="saving=true" :class="inputActivity ? 'button--secondary' : 'button--disabled'">Save Current Guides</li>
         </ul>
@@ -160,21 +161,34 @@
       };
     },
     mounted() {
-      this.getSavedGuides()
+      window.onmessage = (event) => {
+        let data = event.data.pluginMessage;
+        if (!data) return;
+        if (data.frames !== undefined) {
+          this.frames = data.frames;
+          this.frameWidth = data.frames[0].width;
+          this.frameHeight = data.frames[0].height;
+        }
+        if (data.storedData !== undefined) {
+          this.storedData = data.storedData;
+        }
+        if (data.guidesFromSelection !== undefined) {
+          this.gPosition = data.guidesFromSelection;
+          this.colMarginsLinked = data.guidesFromSelection.marginLRlinked !== '';
+          this.rowMarginsLinked = data.guidesFromSelection.marginTBlinked !== '';
+          this.actionTrayOpen = false;
+        }
+      };
+      this.getSavedGuides();
       window.addEventListener('keydown', (event) => {
         let ctrlPressed = event.ctrlKey;
         let shiftPressed = event.shiftKey;
         let sPressed = event.keyCode === 83;
         let trying2save = ctrlPressed && shiftPressed && sPressed;
-        
         if (trying2save && this.inputActivity) {
           this.saving = true;
-        } else {
-          return;
         }
       });
-      // document.addEventListener('pointerlockchange', this.lockChangeAlert, false);
-      // document.addEventListener('mozpointerlockchange', this.lockChangeAlert, false);
     },
     computed: {
       inputActivity() {
@@ -199,14 +213,6 @@
     methods: {
       getFrameDimensions() {
         parent.postMessage({ pluginMessage: { type: "request-dimensions" } }, "*");
-        onmessage = (event) => {
-          let data = event.data.pluginMessage;
-          if (data) {
-            this.frames = data.frames;
-            this.frameWidth = data.frames[0].width
-            this.frameHeight = data.frames[0].height
-          }
-        } 
       },
       toggleView(num){
         switch(num) {
@@ -408,13 +414,10 @@
       },
       getSavedGuides() {
         parent.postMessage({ pluginMessage: { type: "get-saved-guides" } }, "*");
-        // grabs array from code.ts // client storage
-        onmessage = (event) => {
-          let data = event.data.pluginMessage;
-          if (data) {
-            this.storedData = data.storedData // whatever the response from code.ts was.
-          }
-        } 
+      },
+      getGuidesFromSelection() {
+        this.actionTrayOpen = false;
+        parent.postMessage({ pluginMessage: { type: "get-guides-from-selection" } }, "*");
       },
       resetFields() {
         let blanks = {
