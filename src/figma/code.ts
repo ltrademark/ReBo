@@ -119,9 +119,9 @@ function clearAll(sel: any) {
 }
 
 async function startUI() {
-  figma.showUI(__html__, { 
-    width: 300, 
-    height: 225,
+  figma.showUI(__html__, {
+    width: 300,
+    height: 330,
     themeColors: true
   });
   figma.ui.onmessage = async msg => {
@@ -129,15 +129,15 @@ async function startUI() {
     switch (msg.type) {
       case 'add-guides':
         if(figma.currentPage.selection.length > 0) {
-          figma.currentPage.selection.forEach((sel, idx) => { 
+          figma.currentPage.selection.forEach((sel, idx) => {
             let selection = sel as FrameNode;
             let guideData = msg.data;
 
             if(selection.type === "FRAME") {
-              addGuides(selection, guideData[0][idx]);
+              addGuides(selection, guideData[idx]);
             } else {
               makeFrames(selection);
-              addGuides(selection.parent, guideData[0][idx]);
+              addGuides(selection.parent, guideData[idx]);
             }
           });
         } else {

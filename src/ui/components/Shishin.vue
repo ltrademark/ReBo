@@ -5,11 +5,11 @@
         <template v-for="(view, idx) in views" :key="view">
           <li v-if="idx !== views.length - 1" class="gg-tab" :class="{'gg-tab_active' : currentView == idx}" @click="toggleView(idx)">{{view}}</li>
         </template>
-        <li class="gg-tab version-tab" :class="{'gg-tab_active' : currentView == 3}" @click="toggleView(3)" key="whats-new"><icon name="question"></icon></li>
+        <li class="gg-tab version-tab" :class="{'gg-tab_active' : currentView == 2}" @click="toggleView(2)" key="whats-new"><icon name="question"></icon></li>
       </ul>
     </div>
     <div class="gg-app--view">
-      <div class="gg-app--view_cols"  v-if="currentView == 0">
+      <div class="gg-app--view_guides" v-if="currentView == 0">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
             <icon name="margin-left"></icon>
@@ -35,8 +35,7 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="gg-app--view_rows" v-if="currentView == 1">
+        <hr class="gg-divider">
         <div class="gg-row">
           <div class="gg-input gg-input--num">
             <icon name="margin-top"></icon>
@@ -63,7 +62,7 @@
           </div>
         </div>
       </div>
-      <div class="gg-app--view_saved" v-if="currentView == 2">
+      <div class="gg-app--view_saved" v-if="currentView == 1">
         <ul class="gg-app--view_saved-guideslist" :class="{'open' : actionTrayOpen}" v-if="storedData.length > 0">
           <li v-for="(guide, idx) in storedData" class="button button--secondary" :key="idx">
             <p @click.stop="addSavedGuide(idx)">{{guide.name}}</p>
@@ -74,11 +73,11 @@
         </ul>
         <p class="gg-app--view_saved-guideslist--isEmpty" v-if="storedData.length < 1">You haven't saved any guides... yet 😉</p>
       </div>
-      <div class="gg-app--view_whatsnew" v-if="currentView == 3">
+      <div class="gg-app--view_whatsnew" v-if="currentView == 2">
         <whats-new></whats-new>
       </div>
     </div>
-    <div class="gg-app--controls" v-if="currentView < 2">
+    <div class="gg-app--controls" v-if="currentView < 1">
       <div class="gg-app--controls_top">
         <div @click="addIndividualGuide('edgeLeft')" title="Add Guide to Left Edge">
           <icon name="left-edge"></icon>
@@ -136,7 +135,7 @@
       return {
         version: '5.0',
         currentView: 0,
-        views: ['Columns', 'Rows', 'Saved Guides', 'ℹ️'],
+        views: ['Guides', 'Saved Guides', 'ℹ️'],
         frameWidth: null,
         frameHeight: null,
         frames: [],
@@ -180,27 +179,15 @@
     computed: {
       inputActivity() {
         if(this.currentView == 0) {
-          let margin1populated = this.colMarginsLinked ? this.gPosition.marginLRlinked !== '' : this.gPosition.marginLeft !== '',
-              margin2populated = this.colMarginsLinked ? this.gPosition.marginLRlinked !== '' : this.gPosition.marginRight !== '',
-              columnsDeclared = this.gPosition.gridCols > 0;
-          let dataPopulated = margin1populated || margin2populated || columnsDeclared;
-          if(dataPopulated) {
-            return true
-          } else {
-            return false
-          }
-        } else if(this.currentView == 1) {
-          let margin1populated = this.rowMarginsLinked ? this.gPosition.marginTBlinked !== '' : this.gPosition.marginTop !== '',
-              margin2populated = this.rowMarginsLinked ? this.gPosition.marginTBlinked !== '' : this.gPosition.marginBottom !== '',
-              rowsDeclared = this.gPosition.gridRows > 0;
-          let dataPopulated = margin1populated || margin2populated || rowsDeclared;
-          if(dataPopulated)
-            return true
-          else
-            return false
-        } else {
-          return false
+          let colMarginPopulated = this.colMarginsLinked
+            ? this.gPosition.marginLRlinked !== ''
+            : (this.gPosition.marginLeft !== '' || this.gPosition.marginRight !== '');
+          let rowMarginPopulated = this.rowMarginsLinked
+            ? this.gPosition.marginTBlinked !== ''
+            : (this.gPosition.marginTop !== '' || this.gPosition.marginBottom !== '');
+          return colMarginPopulated || rowMarginPopulated || this.gPosition.gridCols > 0 || this.gPosition.gridRows > 0;
         }
+        return false;
       },
       gridColumnsCount() {
         return this.gPosition.gridCols > 0 ? this.gPosition.gridCols : 'No'
@@ -227,19 +214,15 @@
             this.currentView = 0;
             break;
           case 1:
+            this.getSavedGuides();
             this.currentView = 1;
             break;
           case 2:
-            this.getSavedGuides();
             this.currentView = 2;
-            break;
-          case 3:
-            this.currentView = 3;
             break;
           default:
             break;
         }
-
       },
       clearAll() {
         parent.postMessage({ pluginMessage: { type: 'clear-all' } }, '*');
@@ -250,57 +233,24 @@
       addGuides() {
         this.getFrameDimensions();
         let allData = [];
-        let margins = [];
-        let columns = [] = [];
-        let rows = [] = [];
         setTimeout(()=>{
-          if(this.currentView == 0) {
-            // we columns
-            if(this.inputActivity) {
-              this.frames.forEach(e => {
-                // margins first
-                margins.push(this.marginsX(e.width))
-                // now lets check columns
-                columns.push(this.columns(e.width))
-              });
-              if(columns[0] !== undefined) {
-                allData.push(columns)
-              }
-              if(margins[0] !== undefined) {
-                allData.push(margins)
-              }
-              this.tempData = allData;
-              parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
-            } else {
-              return;
-            }
-          } else if(this.currentView == 1) {
-            // we rows now
-            if(this.inputActivity) {
-              this.frames.forEach(e => {
-                // margins first
-                margins.push(this.marginsY(e.height))
-                // now lets check Rows
-                rows.push(this.rows(e.height))
-              });
-              if(rows[0] !== undefined) {
-                allData.push(rows)
-              }
-              if(margins[0] !== undefined) {
-                allData.push(margins)
-              }
-              this.tempData = allData;
-              parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
-            } else {
-              return;
-            }
-          } else if(this.currentView == 2) {
-            // looking at saved guides
-            // parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
-          } else {
-            return;
+          if(this.currentView == 0 && this.inputActivity) {
+            this.frames.forEach(e => {
+              let frameGuides = [];
+              const xMargins = this.marginsX(e.width);
+              const yMargins = this.marginsY(e.height);
+              const cols = this.columns(e.width);
+              const rows = this.rows(e.height);
+              if (xMargins) frameGuides = frameGuides.concat(xMargins);
+              if (yMargins) frameGuides = frameGuides.concat(yMargins);
+              if (cols) frameGuides = frameGuides.concat(cols);
+              if (rows) frameGuides = frameGuides.concat(rows);
+              allData.push(frameGuides);
+            });
+            this.tempData = allData;
+            parent.postMessage({ pluginMessage: { type: "add-guides", data: allData } }, "*");
           }
-        },10);
+        }, 10);
       },
       marginsX(width) {
         let frameWidth = width;
@@ -413,8 +363,7 @@
       addSavedGuide(dataID){
         let guide = this.storedData[dataID];
         this.gPosition = guide.data;
-        this.currentView = guide.view;
-        
+        this.currentView = 0;
         this.addGuides();
         // console.log(this.gPosition);
         // parent.postMessage({ pluginMessage: { type: "add-guides", data: guide.data } }, "*");
@@ -782,6 +731,12 @@
     }
   }
   
+  .gg-divider {
+    border: none;
+    border-top: 1px solid var(--figma-color-border);
+    margin: 8px 0;
+  }
+
   .gg-row {
     display: flex;
     gap: 10px;
