@@ -3,7 +3,8 @@
   "id": "949842685113537477",
   "api": "1.0.0",
   "editorType": [
-    "figma"
+    "figma",
+    "slides"
   ],
   "main": "dist/code.js",
   "ui": "dist/ui.html",

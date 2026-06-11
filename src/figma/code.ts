@@ -18,10 +18,10 @@ const DEFAULT_PRESETS = [
     preset: true,
     view: 0,
     data: {
-      marginLeft: 80, marginRight: 80, marginLRlinked: 80,
+      marginLeft: 0, marginRight: 0, marginLRlinked: 0,
       marginTop: '', marginBottom: '', marginTBlinked: '',
       gridCols: 12, gridRows: 0,
-      colWidth: '', gutterCol: 24, rowHeight: '', gutterRow: ''
+      colWidth: 120, gutterCol: 24, rowHeight: '', gutterRow: ''
     }
   },
   {
@@ -105,19 +105,10 @@ figma.on('run', async ({ command, parameters }: RunEvent) => {
       case 'split-center--v':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel) => {
-            let selection = sel as FrameNode;
-            if(selection.type === "FRAME") {
-              let dimensions = {
-                width: selection.width,
-                height: selection.height
-              };
-              let guide = [{
-                axis: "X",
-                offset: dimensions.width/2
-              }];
-              addGuides(selection, guide);
-            } else {
-              makeFrames(selection);
+            if(isGuidable(sel)) {
+              addGuides(sel, [{ axis: "X", offset: sel.width/2 }]);
+            } else if(figma.editorType === 'figma') {
+              makeFrames(sel);
             }
           });
         } else {
@@ -127,19 +118,10 @@ figma.on('run', async ({ command, parameters }: RunEvent) => {
       case 'split-center--h':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel) => {
-            let selection = sel as FrameNode;
-            if(selection.type === "FRAME") {
-              let dimensions = {
-                width: selection.width,
-                height: selection.height
-              };
-              let guide = [{
-                axis: "Y",
-                offset: dimensions.height/2
-              }];
-              addGuides(selection, guide);
-            } else {
-              makeFrames(selection);
+            if(isGuidable(sel)) {
+              addGuides(sel, [{ axis: "Y", offset: sel.height/2 }]);
+            } else if(figma.editorType === 'figma') {
+              makeFrames(sel);
             }
           });
         } else {
@@ -149,8 +131,7 @@ figma.on('run', async ({ command, parameters }: RunEvent) => {
       case 'clear':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel) => {
-            let selection = sel as FrameNode;
-            selection.guides = [];
+            if(isGuidable(sel)) sel.guides = [];
           })
         } else {
           figma.notify('🪟 Please select a Frame');
@@ -193,9 +174,11 @@ function makeFrames(sel: any) {
 function clearAll(sel: any) {
   const selection = sel;
   selection.forEach((cs: any) => {
-    let selFrame = cs as FrameNode;
-    selFrame.guides = [];
+    if('guides' in cs) cs.guides = [];
   })
+}
+function isGuidable(node: SceneNode): node is FrameNode {
+  return 'guides' in node;
 }
 
 async function startUI() {
@@ -210,14 +193,12 @@ async function startUI() {
       case 'add-guides':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel, idx) => {
-            let selection = sel as FrameNode;
             let guideData = msg.data;
-
-            if(selection.type === "FRAME") {
-              addGuides(selection, guideData[idx]);
-            } else {
-              makeFrames(selection);
-              addGuides(selection.parent, guideData[idx]);
+            if(isGuidable(sel)) {
+              addGuides(sel, guideData[idx]);
+            } else if(figma.editorType === 'figma') {
+              makeFrames(sel);
+              addGuides(sel.parent, guideData[idx]);
             }
           });
         } else {
@@ -227,62 +208,19 @@ async function startUI() {
       case 'split':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel)=>{
-            let selection = sel as FrameNode;
-            if(selection.type === "FRAME") {
+            if(isGuidable(sel)) {
               let splitDir = msg.dirType;
-              let dimensions = {
-                width: selection.width,
-                height: selection.height
-              };
-              if(splitDir === 'edgeTop') {
-                let guide = [{
-                  axis: "Y",
-                  offset: 0
-                }];
-                addGuides(selection, guide);
-              }
-              if(splitDir === 'edgeLeft') {
-                let guide = [{
-                  axis: "X",
-                  offset: 0
-                }];
-                addGuides(selection, guide);
-              }
-              if(splitDir === 'edgeRight') {
-                let guide = [{
-                  axis: "X",
-                  offset: dimensions.width
-                }];
-                addGuides(selection, guide);
-              }
-              if(splitDir === 'edgeBottom') {
-                let guide = [{
-                  axis: "Y",
-                  offset: dimensions.height
-                }];
-                addGuides(selection, guide);
-              }
-              if(splitDir === 'centerHor') {
-                let guide = [{
-                  axis: "Y",
-                  offset: dimensions.height/2
-                }];
-                addGuides(selection, guide);
-              }
-              if(splitDir === 'centerVer') {
-                let guide = [{
-                  axis: "X",
-                  offset: dimensions.width/2
-                }];
-                addGuides(selection, guide);
-              }
-            } else {
-              // uh oh, make this into a frame
-              makeFrames(selection);
+              if(splitDir === 'edgeTop')    addGuides(sel, [{ axis: "Y", offset: 0 }]);
+              if(splitDir === 'edgeLeft')   addGuides(sel, [{ axis: "X", offset: 0 }]);
+              if(splitDir === 'edgeRight')  addGuides(sel, [{ axis: "X", offset: sel.width }]);
+              if(splitDir === 'edgeBottom') addGuides(sel, [{ axis: "Y", offset: sel.height }]);
+              if(splitDir === 'centerHor')  addGuides(sel, [{ axis: "Y", offset: sel.height/2 }]);
+              if(splitDir === 'centerVer')  addGuides(sel, [{ axis: "X", offset: sel.width/2 }]);
+            } else if(figma.editorType === 'figma') {
+              makeFrames(sel);
             }
           });
         } else {
-          // Can only add to frames
           figma.notify('🪟 Please select a Frame');
         }
         break;
@@ -348,8 +286,8 @@ async function startUI() {
         break;
       case 'get-guides-from-selection':
         if(figma.currentPage.selection.length > 0) {
-          const sel = figma.currentPage.selection[0] as FrameNode;
-          if(sel.type === "FRAME") {
+          const sel = figma.currentPage.selection[0];
+          if(isGuidable(sel)) {
             if(sel.guides.length === 0) {
               figma.notify('No guides found on this frame');
               break;
@@ -366,10 +304,7 @@ async function startUI() {
       case 'apply-raw-guides':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel) => {
-            let selection = sel as FrameNode;
-            if(selection.type === "FRAME") {
-              addGuides(selection, msg.guides);
-            }
+            if(isGuidable(sel)) addGuides(sel, msg.guides);
           });
         } else {
           figma.notify('🪟 Please select a Frame');
