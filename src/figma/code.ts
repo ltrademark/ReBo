@@ -36,28 +36,72 @@ const DEFAULT_PRESETS = [
     }
   }
 ];
-figma.parameters.on('input', ({ key, result }: ParameterInputEvent ) => {
+figma.parameters.on('input', async ({ key, result }: ParameterInputEvent ) => {
   if (figma.currentPage.selection.length === 0) {
     result.setError('Please select one or more nodes first')
     return
   }
   switch (key) {
     case 'reboQuery':
-      let menu = [
+      result.setLoadingMessage('Loading options...');
+      const stored = await figma.clientStorage.getAsync("storedData") || [];
+      const staticOptions = [
+        { name: 'Clear all Guides', data: 'clear' },
         { name: 'Split Horizontally', data: 'split-center--h' },
         { name: 'Split Vertically', data: 'split-center--v' },
-        { name: 'Clear all Guides', data: 'clear' },
       ];
-      result.setSuggestions(menu);
+      const guideOptions = stored.map((g: any, i: number) => ({ name: `Apply Saved Guide: ${g.name}`, data: i }));
+      result.setSuggestions([...staticOptions, ...guideOptions]);
       break;
     default:
       return;
   }
 });
 
-figma.on('run', ({ command, parameters }: RunEvent) => {
+figma.on('run', async ({ command, parameters }: RunEvent) => {
   if(parameters) {
-    switch(parameters.reboQuery) {
+    const query = parameters.reboQuery as any;
+    if(typeof query === 'number') {
+      const stored = await figma.clientStorage.getAsync("storedData") || [];
+      const guide = stored[query];
+      if(!guide) { figma.notify('Saved guide not found'); figma.closePlugin(); return; }
+      if(figma.currentPage.selection.length > 0) {
+        figma.currentPage.selection.forEach((sel) => {
+          const selection = sel as FrameNode;
+          if(selection.type === "FRAME") {
+            if(guide.type === 'raw') {
+              addGuides(selection, guide.guides);
+            } else {
+              const pos = guide.data;
+              const w = selection.width, h = selection.height;
+              const guides: { axis: string; offset: number }[] = [];
+              if(pos.marginLeft !== '') guides.push({ axis: 'X', offset: Number(pos.marginLeft) });
+              if(pos.marginRight !== '') guides.push({ axis: 'X', offset: w - Number(pos.marginRight) });
+              if(pos.marginTop !== '') guides.push({ axis: 'Y', offset: Number(pos.marginTop) });
+              if(pos.marginBottom !== '') guides.push({ axis: 'Y', offset: h - Number(pos.marginBottom) });
+              if(pos.gridCols > 1) {
+                const gutW = Number(pos.gutterCol) || 0;
+                const colW = pos.colWidth !== '' ? Number(pos.colWidth) : (w - (pos.marginLeft !== '' ? Number(pos.marginLeft) : 0) - (pos.marginRight !== '' ? Number(pos.marginRight) : 0) - gutW * (pos.gridCols - 1)) / pos.gridCols;
+                const totalW = pos.gridCols * colW + (pos.gridCols - 1) * gutW;
+                const startX = w / 2 - totalW / 2;
+                for(let i = 0; i < pos.gridCols; i++) {
+                  const colStart = startX + i * (colW + gutW);
+                  guides.push({ axis: 'X', offset: Math.round(colStart) });
+                  guides.push({ axis: 'X', offset: Math.round(colStart + colW) });
+                }
+              }
+              addGuides(selection, guides);
+            }
+          }
+        });
+        figma.notify(`Applied "${guide.name}" ✨`);
+      } else {
+        figma.notify('🪟 Please select a Frame');
+      }
+      figma.closePlugin();
+      return;
+    }
+    switch(query) {
       case 'split-center--v':
         if(figma.currentPage.selection.length > 0) {
           figma.currentPage.selection.forEach((sel) => {

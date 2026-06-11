@@ -9,7 +9,10 @@
   "ui": "dist/ui.html",
   "documentAccess": "dynamic-page",
   "networkAccess": {
-    "allowedDomains": ["none"]
+    "allowedDomains": ["none"],
+    "devAllowedDomains": [
+      "http://localhost:5173"
+    ]
   },
   "parameterOnly": false,
   "parameters": [
